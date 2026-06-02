@@ -1,36 +1,55 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Notice — Frontend (Next.js)
 
-## Getting Started
+Frontend do agregador de notícias [Notice API](https://notice.muttercorp.com.br), pronto para deploy na [Vercel](https://vercel.com).
 
-First, run the development server:
+## Funcionalidades
+
+- **Feed** (`/`) — abas por categoria, busca, filtros por fonte, paginação
+- **Detalhe** (`/articles/[id]`) — título, resumo, links externos
+- **Dashboard** (`/dashboard`) — gráficos por categoria e top fontes (`GET /stats`)
+- **Admin** (`/admin`) — ingestão manual (`POST /ingestion/run`), só com `NEXT_PUBLIC_ENABLE_ADMIN=true`
+
+## Variáveis de ambiente
+
+Copie `.env.example` para `.env.local`:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+NEXT_PUBLIC_NOTICE_API_URL=https://notice.muttercorp.com.br
+NEXT_PUBLIC_ENABLE_ADMIN=false
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Em desenvolvimento com API local via túnel SSH:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+NEXT_PUBLIC_NOTICE_API_URL=http://127.0.0.1:3002
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Desenvolvimento
 
-## Learn More
+```bash
+npm install
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Abra [http://localhost:3000](http://localhost:3000).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deploy na Vercel
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Importe o repositório na Vercel (framework: **Next.js**, detectado automaticamente).
+2. Configure as variáveis de ambiente no painel do projeto:
+   - `NEXT_PUBLIC_NOTICE_API_URL` = `https://notice.muttercorp.com.br`
+   - `NEXT_PUBLIC_ENABLE_ADMIN` = `false` (ou `true` se quiser o painel admin)
+3. Deploy.
 
-## Deploy on Vercel
+A API já permite CORS (`*`), então o browser pode chamar a API de produção diretamente.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Stack
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Next.js 16 (App Router)
+- TypeScript
+- Tailwind CSS 4
+- TanStack Query (cache ~3 min)
+
+## Contrato da API
+
+Documentação: [https://notice.muttercorp.com.br/docs](https://notice.muttercorp.com.br/docs)
