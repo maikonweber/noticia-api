@@ -2,7 +2,8 @@ export type Category =
   | "investimentos"
   | "tecnologia"
   | "programacao"
-  | "esportes";
+  | "esportes"
+  | "entretenimento";
 export type SourceType = "rss" | "html";
 
 export type Article = {

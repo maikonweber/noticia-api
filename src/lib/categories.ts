@@ -25,6 +25,11 @@ export const CATEGORIES: {
     label: "Esportes",
     description: "Futebol, competições e notícias esportivas",
   },
+  {
+    id: "entretenimento",
+    label: "Entretenimento",
+    description: "Cinema, música, TV e cultura pop",
+  },
 ];
 
 export const CATEGORY_LABEL: Record<string, string> = Object.fromEntries(
