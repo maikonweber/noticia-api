@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     template: "%s · Notice",
   },
   description:
-    "Agregador de notícias por categoria: investimentos, tecnologia e programação.",
+    "Agregador de notícias por categoria: investimentos, tecnologia, programação e esportes.",
 };
 
 export default function RootLayout({

@@ -20,6 +20,11 @@ export const CATEGORIES: {
     label: "Programação",
     description: "Dev, open source e ferramentas",
   },
+  {
+    id: "esportes",
+    label: "Esportes",
+    description: "Futebol, competições e notícias esportivas",
+  },
 ];
 
 export const CATEGORY_LABEL: Record<string, string> = Object.fromEntries(

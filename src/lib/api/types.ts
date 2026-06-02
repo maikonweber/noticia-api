@@ -1,4 +1,8 @@
-export type Category = "investimentos" | "tecnologia" | "programacao";
+export type Category =
+  | "investimentos"
+  | "tecnologia"
+  | "programacao"
+  | "esportes";
 export type SourceType = "rss" | "html";
 
 export type Article = {
