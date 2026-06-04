@@ -63,3 +63,56 @@ export type ArticlesQuery = {
   page?: number;
   limit?: number;
 };
+
+export type BannerType = "product" | "shop" | "campaign";
+
+export type Banner = {
+  id: number;
+  type: BannerType;
+  externalId: string;
+  title: string;
+  imageUrl: string | null;
+  link: string;
+  originalLink: string | null;
+  price: number | null;
+  priceMin: number | null;
+  priceMax: number | null;
+  discountPercent: number | null;
+  commissionRate: number | null;
+  commissionPercent: number | null;
+  commission: number | null;
+  sales: number | null;
+  rating: number | null;
+  shop: { id: number; name: string } | null;
+  categoryId: number | null;
+  periodStart: string | null;
+  periodEnd: string | null;
+  placement: string;
+  featured: boolean;
+  metadata: Record<string, unknown>;
+  syncedAt: string;
+  updatedAt: string;
+};
+
+export type BannersResponse = {
+  items: Banner[];
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+};
+
+export type FeaturedBannersResponse = {
+  items: Banner[];
+  limit: number;
+  placement?: string;
+};
+
+export type BannersQuery = {
+  type?: BannerType;
+  placement?: string;
+  featured?: boolean;
+  q?: string;
+  page?: number;
+  limit?: number;
+};

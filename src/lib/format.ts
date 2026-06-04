@@ -15,6 +15,26 @@ export function formatArticleDate(
   }).format(date);
 }
 
+export function formatPrice(value: number | null | undefined): string {
+  if (value == null) return "";
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  }).format(value);
+}
+
+export function formatPriceRange(banner: {
+  price: number | null;
+  priceMin: number | null;
+  priceMax: number | null;
+}): string {
+  const { price, priceMin, priceMax } = banner;
+  if (priceMin != null && priceMax != null && priceMin !== priceMax) {
+    return `${formatPrice(priceMin)} – ${formatPrice(priceMax)}`;
+  }
+  return formatPrice(price ?? priceMin ?? priceMax);
+}
+
 export function formatRelativeDate(iso: string): string {
   const date = new Date(iso);
   const now = Date.now();

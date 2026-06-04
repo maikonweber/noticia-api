@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { fetchArticle } from "@/lib/api/client";
+import { InlineBannerStatic } from "@/components/banners/InlineBanner";
+import { SidebarBannerStatic } from "@/components/banners/SidebarBanner";
+import { fetchArticle, fetchBanners } from "@/lib/api/client";
+import type { Banner } from "@/lib/api/types";
 import { CATEGORY_LABEL } from "@/lib/categories";
 import { formatArticleDate } from "@/lib/format";
 
@@ -38,8 +41,22 @@ export default async function ArticlePage({ params }: Props) {
     article.collectedAt,
   );
 
+  let inlineBanner: Banner | null = null;
+  let sidebarBanner: Banner | null = null;
+  try {
+    const [inlineRes, sidebarRes] = await Promise.all([
+      fetchBanners({ featured: true, limit: 1, page: (numId % 12) + 1 }),
+      fetchBanners({ type: "shop", placement: "sidebar", limit: 1 }),
+    ]);
+    inlineBanner = inlineRes.items[0] ?? null;
+    sidebarBanner = sidebarRes.items[0] ?? null;
+  } catch {
+    /* banners são opcionais */
+  }
+
   return (
-    <article className="mx-auto max-w-2xl">
+    <div className="mx-auto max-w-4xl lg:grid lg:grid-cols-[minmax(0,1fr)_200px] lg:items-start lg:gap-8">
+      <article className="min-w-0 max-w-2xl lg:max-w-none">
       <Link
         href="/"
         className="mb-6 inline-flex text-sm text-[var(--muted)] hover:text-[var(--accent)]"
@@ -77,6 +94,12 @@ export default async function ArticlePage({ params }: Props) {
         </p>
       )}
 
+      {inlineBanner && (
+        <div className="mb-8">
+          <InlineBannerStatic banner={inlineBanner} />
+        </div>
+      )}
+
       <div className="flex flex-wrap gap-3">
         {article.url && (
           <a
@@ -99,6 +122,13 @@ export default async function ArticlePage({ params }: Props) {
           </a>
         )}
       </div>
-    </article>
+      </article>
+
+      {sidebarBanner && (
+        <aside className="hidden lg:block">
+          <SidebarBannerStatic banner={sidebarBanner} />
+        </aside>
+      )}
+    </div>
   );
 }

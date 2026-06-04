@@ -3,6 +3,9 @@ import type {
   Article,
   ArticlesQuery,
   ArticlesResponse,
+  BannersQuery,
+  BannersResponse,
+  FeaturedBannersResponse,
   IngestionResult,
   SourcesResponse,
   StatsResponse,
@@ -89,4 +92,33 @@ export async function runIngestion(body?: {
     }),
     cache: "no-store",
   });
+}
+
+export async function fetchBanners(
+  params: BannersQuery = {},
+): Promise<BannersResponse> {
+  return apiFetch<BannersResponse>(
+    `/banners${toSearchParams({
+      type: params.type,
+      placement: params.placement,
+      featured: params.featured,
+      q: params.q,
+      page: params.page ?? 1,
+      limit: params.limit ?? 20,
+    })}`,
+    { cache: "no-store" },
+  );
+}
+
+export async function fetchFeaturedBanners(params?: {
+  limit?: number;
+  placement?: string;
+}): Promise<FeaturedBannersResponse> {
+  return apiFetch<FeaturedBannersResponse>(
+    `/banners/featured${toSearchParams({
+      limit: params?.limit ?? 5,
+      placement: params?.placement,
+    })}`,
+    { cache: "no-store" },
+  );
 }

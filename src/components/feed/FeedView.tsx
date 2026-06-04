@@ -8,6 +8,8 @@ import { ErrorState } from "@/components/articles/ErrorState";
 import { Pagination } from "@/components/articles/Pagination";
 import { SearchBar } from "@/components/articles/SearchBar";
 import { SourceFilters } from "@/components/articles/SourceFilters";
+import { HeroCarousel } from "@/components/banners/HeroCarousel";
+import { InlineBanner } from "@/components/banners/InlineBanner";
 import { Spinner } from "@/components/ui/Spinner";
 import { useArticles, useSources } from "@/lib/api/hooks";
 import type { Category } from "@/lib/api/types";
@@ -72,6 +74,8 @@ export function FeedView() {
         />
       </section>
 
+      <HeroCarousel />
+
       <section>
         {articlesQuery.isLoading && (
           <div className="flex justify-center py-20">
@@ -90,8 +94,13 @@ export function FeedView() {
         {articlesQuery.isSuccess && articlesQuery.data.total > 0 && (
           <div className="space-y-6">
             <div className="grid gap-4">
-              {articlesQuery.data.items.map((article) => (
-                <ArticleCard key={article.id} article={article} />
+              {articlesQuery.data.items.map((article, index) => (
+                <div key={article.id} className="contents">
+                  <ArticleCard article={article} />
+                  {index === 7 && (
+                    <InlineBanner page={page} variant="compact" />
+                  )}
+                </div>
               ))}
             </div>
             <Pagination
