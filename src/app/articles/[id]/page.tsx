@@ -3,8 +3,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { InlineBannerStatic } from "@/components/banners/InlineBanner";
 import { SidebarBannerStatic } from "@/components/banners/SidebarBanner";
+import { ArticleBody } from "@/components/articles/ArticleBody";
+import { EnrichedBadge } from "@/components/articles/EnrichedBadge";
 import { fetchArticle, fetchBanners } from "@/lib/api/client";
 import type { Banner } from "@/lib/api/types";
+import { hasEnrichedBody } from "@/lib/articles";
 import { CATEGORY_LABEL } from "@/lib/categories";
 import { formatArticleDate } from "@/lib/format";
 
@@ -16,7 +19,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   try {
     const article = await fetchArticle(Number(id));
-    return { title: article.title };
+    const description =
+      article.body?.trim() ??
+      article.summary?.trim() ??
+      undefined;
+    return {
+      title: article.title,
+      ...(description ? { description } : {}),
+    };
   } catch {
     return { title: "Notícia não encontrada" };
   }
@@ -71,6 +81,7 @@ export default async function ArticlePage({ params }: Props) {
         {article.sourceName && (
           <span className="text-[var(--muted)]">{article.sourceName}</span>
         )}
+        {hasEnrichedBody(article) && <EnrichedBadge />}
         <span className="text-[var(--muted)]">·</span>
         <time dateTime={article.publishedAt ?? article.collectedAt}>
           {dateStr}
@@ -84,13 +95,17 @@ export default async function ArticlePage({ params }: Props) {
         {article.title}
       </h1>
 
-      {article.summary ? (
-        <div className="mb-8 rounded-xl border border-[var(--border)] bg-[var(--surface)] p-5 text-base leading-relaxed text-[var(--foreground)]">
-          {article.summary}
+      {hasEnrichedBody(article) ? (
+        <div className="mb-8 rounded-xl border border-[var(--border)] bg-[var(--surface)] p-5 text-base text-[var(--foreground)]">
+          <ArticleBody text={article.body!.trim()} />
+        </div>
+      ) : article.summary?.trim() ? (
+        <div className="mb-8 rounded-xl border border-[var(--border)] bg-[var(--surface)] p-5 text-base text-[var(--foreground)]">
+          <ArticleBody text={article.summary.trim()} />
         </div>
       ) : (
-        <p className="mb-8 text-sm italic text-[var(--muted)]">
-          Sem resumo disponível.
+        <p className="mb-8 text-sm text-[var(--muted)]">
+          Conteúdo completo disponível na fonte original.
         </p>
       )}
 
@@ -108,7 +123,9 @@ export default async function ArticlePage({ params }: Props) {
             rel="noopener noreferrer"
             className="inline-flex rounded-xl bg-[var(--accent)] px-5 py-2.5 text-sm font-semibold text-[var(--accent-fg)] hover:opacity-90"
           >
-            Abrir fonte original ↗
+            {hasEnrichedBody(article) || article.summary?.trim()
+              ? "Abrir fonte original ↗"
+              : "Ler na fonte ↗"}
           </a>
         )}
         {article.sourceUrl && (

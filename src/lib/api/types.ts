@@ -15,9 +15,14 @@ export type Article = {
   title: string;
   url: string | null;
   summary: string | null;
+  body: string | null;
+  bodyGeneratedAt: string | null;
   publishedAt: string | null;
   collectedAt: string;
 };
+
+/** Alias alinhado ao contrato notice-api */
+export type ArticlesListResponse = ArticlesResponse;
 
 export type ArticlesResponse = {
   items: Article[];

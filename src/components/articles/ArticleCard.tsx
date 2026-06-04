@@ -1,5 +1,12 @@
 import Link from "next/link";
+import { ArticlePreviewSkeleton } from "@/components/articles/ArticlePreviewSkeleton";
+import { EnrichedBadge } from "@/components/articles/EnrichedBadge";
 import type { Article } from "@/lib/api/types";
+import {
+  getArticlePreview,
+  hasEnrichedBody,
+  isEnrichmentPending,
+} from "@/lib/articles";
 import { CATEGORY_LABEL } from "@/lib/categories";
 import { formatRelativeDate } from "@/lib/format";
 
@@ -7,6 +14,9 @@ export function ArticleCard({ article }: { article: Article }) {
   const dateLabel = formatRelativeDate(
     article.publishedAt ?? article.collectedAt,
   );
+  const preview = getArticlePreview(article);
+  const showPreview = preview !== article.title;
+  const pending = isEnrichmentPending(article);
 
   return (
     <article className="group rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4 transition-shadow hover:shadow-md hover:shadow-black/5">
@@ -14,6 +24,7 @@ export function ArticleCard({ article }: { article: Article }) {
         <span className="rounded-full bg-[var(--elevated)] px-2 py-0.5 font-medium text-[var(--muted)]">
           {CATEGORY_LABEL[article.category] ?? article.category}
         </span>
+        {hasEnrichedBody(article) && <EnrichedBadge />}
         {article.sourceName && (
           <span className="text-[var(--muted)]">{article.sourceName}</span>
         )}
@@ -35,9 +46,17 @@ export function ArticleCard({ article }: { article: Article }) {
         </Link>
       </h2>
 
-      {article.summary && (
-        <p className="mb-3 line-clamp-2 text-sm leading-relaxed text-[var(--muted)]">
-          {article.summary}
+      {pending && !showPreview ? (
+        <ArticlePreviewSkeleton />
+      ) : showPreview ? (
+        <p className="mb-3 line-clamp-3 text-sm leading-relaxed text-[var(--muted)]">
+          {preview}
+        </p>
+      ) : null}
+
+      {pending && showPreview && (
+        <p className="mb-3 text-[10px] text-[var(--muted)]">
+          Texto revisado em breve
         </p>
       )}
 
