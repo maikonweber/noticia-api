@@ -23,16 +23,20 @@ import {
   HIGH_VALUE_LIMIT,
   HIGH_VALUE_MIN_PRICE,
 } from "./offers";
-import type { ArticlesQuery, BannersQuery, Category } from "./types";
+import type { ArticlesQuery, ArticlesResponse, BannersQuery, Category } from "./types";
 
 const STALE_MS = 3 * 60 * 1000;
 
-export function useArticles(params: ArticlesQuery) {
+export function useArticles(
+  params: ArticlesQuery,
+  options?: { initialData?: ArticlesResponse },
+) {
   return useQuery({
     queryKey: ["articles", params],
     queryFn: () => fetchArticles(params),
     staleTime: STALE_MS,
     placeholderData: (prev) => prev,
+    initialData: options?.initialData,
   });
 }
 
