@@ -1,6 +1,6 @@
 "use client";
 
-import { useBanners, useNotebookBanners } from "@/lib/api/hooks";
+import { useFreshOffers } from "@/lib/api/hooks";
 import { BANNER_ROTATE_MS, useRotatingBanner } from "@/lib/banners/rotate";
 import type { Banner } from "@/lib/api/types";
 import { formatPriceRange } from "@/lib/format";
@@ -9,42 +9,20 @@ import { BannerAnchor, BannerImage, SponsoredLabel } from "./shared";
 type Props = {
   page?: number;
   variant?: "compact" | "card";
-  /** Prefere ofertas notebook; senão featured genérico */
   focus?: "notebook" | "featured";
 };
 
-const INLINE_POOL = 20;
+const INLINE_POOL = 16;
 
 export function InlineBanner({
   page = 1,
   variant = "compact",
-  focus = "notebook",
 }: Props) {
-  const notebookQuery = useNotebookBanners(INLINE_POOL);
-  const featuredQuery = useBanners({
-    featured: true,
-    limit: INLINE_POOL,
-    page: 1,
-  });
+  const { data, dataUpdatedAt, isLoading } = useFreshOffers(INLINE_POOL, page);
+  const pool = data?.items ?? [];
+  const banner = useRotatingBanner(pool, BANNER_ROTATE_MS, page, dataUpdatedAt);
 
-  const notebookItems = notebookQuery.data?.items ?? [];
-  const featuredItems = featuredQuery.data?.items ?? [];
-
-  const pool =
-    focus === "notebook" && notebookItems.length > 0
-      ? notebookItems
-      : featuredItems.length > 0
-        ? featuredItems
-        : notebookItems;
-
-  const banner = useRotatingBanner(pool, BANNER_ROTATE_MS, page);
-
-  const loading =
-    focus === "notebook"
-      ? notebookQuery.isLoading
-      : featuredQuery.isLoading || notebookQuery.isLoading;
-
-  if (loading) {
+  if (isLoading && !banner) {
     return (
       <div
         aria-hidden
@@ -135,24 +113,7 @@ function InlineBannerCard({ banner }: { banner: Banner }) {
 }
 
 export function InlineBannerStatic({ banner }: { banner: Banner }) {
-  return <InlineBannerRotating pool={[banner]} />;
-}
-
-/** Versão estática que ainda rotaciona se receber um pool maior via wrapper */
-function InlineBannerRotating({
-  pool,
-  variant = "card",
-}: {
-  pool: Banner[];
-  variant?: "compact" | "card";
-}) {
-  const banner = useRotatingBanner(pool, BANNER_ROTATE_MS);
-  if (!banner) return null;
-  return variant === "card" ? (
-    <InlineBannerCard banner={banner} />
-  ) : (
-    <InlineBannerCompact banner={banner} />
-  );
+  return <InlineBannerCard banner={banner} />;
 }
 
 export function InlineBannerStaticPool({
@@ -162,5 +123,18 @@ export function InlineBannerStaticPool({
   banners: Banner[];
   variant?: "compact" | "card";
 }) {
-  return <InlineBannerRotating pool={banners} variant={variant} />;
+  const live = useFreshOffers(INLINE_POOL, 3);
+  const pool = live.data?.items?.length ? live.data.items : banners;
+  const banner = useRotatingBanner(
+    pool,
+    BANNER_ROTATE_MS,
+    0,
+    live.dataUpdatedAt,
+  );
+  if (!banner) return null;
+  return variant === "card" ? (
+    <InlineBannerCard banner={banner} />
+  ) : (
+    <InlineBannerCompact banner={banner} />
+  );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useSidebarOffers } from "@/lib/api/hooks";
+import { useFreshOffers } from "@/lib/api/hooks";
 import { BANNER_ROTATE_MS, useRotatingBanners } from "@/lib/banners/rotate";
 import type { Banner } from "@/lib/api/types";
 import { formatPriceRange } from "@/lib/format";
@@ -9,20 +9,27 @@ import { BannerAnchor, BannerImage, SponsoredLabel } from "./shared";
 type Props = {
   limit?: number;
   title?: string;
+  /** Slot distinto = query key distinta (itens diferentes) */
+  slot?: number;
 };
-
-const SIDEBAR_POOL_MULTIPLIER = 4;
 
 export function SidebarBanner({
   limit = 4,
-  title = "Notebooks e tech",
+  title = "Ofertas Shopee",
+  slot = 0,
 }: Props) {
-  const poolSize = Math.max(limit * SIDEBAR_POOL_MULTIPLIER, 12);
-  const { data, isSuccess, isLoading } = useSidebarOffers(poolSize);
+  const poolSize = Math.max(limit * 3, 12);
+  const { data, dataUpdatedAt, isLoading } = useFreshOffers(poolSize, slot);
   const pool = data?.items ?? [];
-  const { items } = useRotatingBanners(pool, limit, BANNER_ROTATE_MS);
+  const { items } = useRotatingBanners(
+    pool,
+    limit,
+    BANNER_ROTATE_MS,
+    slot,
+    dataUpdatedAt,
+  );
 
-  if (isLoading) {
+  if (isLoading && !items.length) {
     return (
       <div className="space-y-3" aria-hidden>
         {Array.from({ length: Math.min(limit, 3) }).map((_, i) => (
@@ -35,7 +42,7 @@ export function SidebarBanner({
     );
   }
 
-  if (!isSuccess || !items.length) return null;
+  if (!items.length) return null;
 
   return (
     <div className="sticky top-20 space-y-3">
@@ -43,7 +50,10 @@ export function SidebarBanner({
         {title}
       </p>
       {items.map((banner) => (
-        <SidebarBannerCard key={`${banner.id}-${banner.externalId}`} banner={banner} />
+        <SidebarBannerCard
+          key={`${banner.id}-${banner.externalId}`}
+          banner={banner}
+        />
       ))}
     </div>
   );
@@ -51,15 +61,23 @@ export function SidebarBanner({
 
 export function SidebarBannerStatic({
   banners,
-  title = "Notebooks e tech",
+  title = "Ofertas Shopee",
   limit,
 }: {
   banners: Banner[];
   title?: string;
   limit?: number;
 }) {
-  const count = limit ?? banners.length;
-  const { items } = useRotatingBanners(banners, count, BANNER_ROTATE_MS);
+  const count = limit ?? Math.min(4, banners.length || 4);
+  const live = useFreshOffers(Math.max(count * 3, 12), 7);
+  const pool = live.data?.items?.length ? live.data.items : banners;
+  const { items } = useRotatingBanners(
+    pool,
+    count,
+    BANNER_ROTATE_MS,
+    0,
+    live.dataUpdatedAt,
+  );
 
   if (!items.length) return null;
 
@@ -69,7 +87,10 @@ export function SidebarBannerStatic({
         {title}
       </p>
       {items.map((banner) => (
-        <SidebarBannerCard key={`${banner.id}-${banner.externalId}`} banner={banner} />
+        <SidebarBannerCard
+          key={`${banner.id}-${banner.externalId}`}
+          banner={banner}
+        />
       ))}
     </div>
   );

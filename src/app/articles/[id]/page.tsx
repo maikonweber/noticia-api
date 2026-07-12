@@ -1,17 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { InlineBannerStaticPool } from "@/components/banners/InlineBanner";
-import { SidebarBannerStatic } from "@/components/banners/SidebarBanner";
+import { InlineBanner } from "@/components/banners/InlineBanner";
+import { SidebarBanner } from "@/components/banners/SidebarBanner";
 import { ArticleBody } from "@/components/articles/ArticleBody";
 import { EnrichedBadge } from "@/components/articles/EnrichedBadge";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { fetchArticle } from "@/lib/api/client";
-import {
-  fetchNotebookBanners,
-  fetchSidebarOffers,
-} from "@/lib/api/offers";
-import type { Banner } from "@/lib/api/types";
 import { hasEnrichedBody } from "@/lib/articles";
 import { CATEGORY_LABEL } from "@/lib/categories";
 import { formatArticleDate } from "@/lib/format";
@@ -63,20 +58,6 @@ export default async function ArticlePage({ params }: Props) {
     CATEGORY_LABEL[article.category] ?? article.category;
   const categoryHref = categoryPath(article.category);
   const publishedIso = article.publishedAt ?? article.collectedAt;
-
-  let notebookPool: Banner[] = [];
-  let sidebarBanners: Banner[] = [];
-  try {
-    const [notebookRes, sidebarRes] = await Promise.all([
-      fetchNotebookBanners(16),
-      fetchSidebarOffers(16),
-    ]);
-    notebookPool = notebookRes.items;
-    sidebarBanners =
-      sidebarRes.items.length > 0 ? sidebarRes.items : notebookPool;
-  } catch {
-    /* banners são opcionais */
-  }
 
   return (
     <>
@@ -172,11 +153,9 @@ export default async function ArticlePage({ params }: Props) {
             </p>
           )}
 
-          {notebookPool.length > 0 && (
-            <div className="mb-8">
-              <InlineBannerStaticPool banners={notebookPool} />
-            </div>
-          )}
+          <div className="mb-8">
+            <InlineBanner page={numId % 20} variant="card" />
+          </div>
 
           <div className="flex flex-wrap gap-3">
             {article.url && (
@@ -212,26 +191,14 @@ export default async function ArticlePage({ params }: Props) {
             .
           </p>
 
-          {sidebarBanners.length > 0 && (
-            <div className="mt-10 lg:hidden">
-              <SidebarBannerStatic
-                banners={sidebarBanners}
-                limit={2}
-                title="Ofertas notebook"
-              />
-            </div>
-          )}
+          <div className="mt-10 lg:hidden">
+            <SidebarBanner limit={2} slot={2} title="Ofertas Shopee" />
+          </div>
         </article>
 
-        {sidebarBanners.length > 0 && (
-          <aside className="hidden lg:block" aria-label="Ofertas">
-            <SidebarBannerStatic
-              banners={sidebarBanners}
-              limit={4}
-              title="Notebooks e tech"
-            />
-          </aside>
-        )}
+        <aside className="hidden lg:block" aria-label="Ofertas">
+          <SidebarBanner limit={4} slot={1} title="Ofertas Shopee" />
+        </aside>
       </div>
     </>
   );

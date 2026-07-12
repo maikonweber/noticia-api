@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { Banner } from "@/lib/api/types";
 
-/** Intervalo de troca automática dos banners */
+/** Intervalo alinhado ao refetch da API */
 export const BANNER_ROTATE_MS = 30_000;
 
 export function shuffleBanners(items: Banner[]): Banner[] {
@@ -18,7 +18,7 @@ export function shuffleBanners(items: Banner[]): Banner[] {
 }
 
 function poolKey(items: Banner[]): string {
-  return items.map((item) => String(item.id)).join(",");
+  return items.map((item) => String(item.externalId || item.id)).join(",");
 }
 
 export type RotatingBannersResult = {
@@ -28,22 +28,23 @@ export type RotatingBannersResult = {
 };
 
 /**
- * Embaralha o pool a cada reload e avança a janela a cada `intervalMs`.
- * Ao fim do deck, reembaralha. `slot` desloca o início (vários inlines).
+ * Reembaralha quando o pool da API muda (`revision` / ids)
+ * e avança a janela a cada `intervalMs`.
  */
 export function useRotatingBanners(
   pool: Banner[],
   count: number,
   intervalMs = BANNER_ROTATE_MS,
   slot = 0,
+  /** Ex.: dataUpdatedAt do React Query — força novo shuffle a cada fetch */
+  revision = 0,
 ): RotatingBannersResult {
-  const key = poolKey(pool);
+  const key = `${poolKey(pool)}::${revision}`;
   const [epoch, setEpoch] = useState(0);
   const [offset, setOffset] = useState(0);
 
   const deck = useMemo(
     () => (pool.length ? shuffleBanners(pool) : []),
-    // epoch força novo shuffle a cada ciclo completo
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [key, epoch],
   );
@@ -72,7 +73,7 @@ export function useRotatingBanners(
     }, intervalMs);
 
     return () => window.clearInterval(timer);
-  }, [deck.length, count, intervalMs, slot]);
+  }, [deck.length, count, intervalMs, slot, key]);
 
   const items = useMemo(() => {
     if (!deck.length) return [];
@@ -92,7 +93,8 @@ export function useRotatingBanner(
   pool: Banner[],
   intervalMs = BANNER_ROTATE_MS,
   slot = 0,
+  revision = 0,
 ): Banner | null {
-  const { items } = useRotatingBanners(pool, 1, intervalMs, slot);
+  const { items } = useRotatingBanners(pool, 1, intervalMs, slot, revision);
   return items[0] ?? null;
 }

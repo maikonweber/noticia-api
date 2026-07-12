@@ -5,20 +5,22 @@ import { BANNER_ROTATE_MS, useRotatingBanners } from "@/lib/banners/rotate";
 import { formatPriceRange } from "@/lib/format";
 import { BannerAnchor, BannerImage, SponsoredLabel } from "./shared";
 
-/** Pool maior para variar a cada reload / rotação */
 const HERO_POOL = 16;
 
 export function HeroCarousel() {
-  const { data, isSuccess, isLoading, isError } = useHeroBanners(HERO_POOL);
+  const { data, dataUpdatedAt, isLoading, isError, isFetching } =
+    useHeroBanners(HERO_POOL);
   const pool = data?.items ?? [];
   const { items, offset, total } = useRotatingBanners(
     pool,
     1,
     BANNER_ROTATE_MS,
+    0,
+    dataUpdatedAt,
   );
   const banner = items[0];
 
-  if (isLoading) {
+  if (isLoading && !banner) {
     return (
       <aside
         aria-hidden
@@ -27,22 +29,24 @@ export function HeroCarousel() {
     );
   }
 
-  if (isError || !isSuccess || !banner) return null;
+  if (isError && !banner) return null;
+  if (!banner) return null;
 
   const price = formatPriceRange(banner);
-  const dotCount = Math.min(5, total);
+  const dotCount = Math.min(5, Math.max(total, 1));
   const activeDot = total > 0 ? offset % dotCount : 0;
 
   return (
     <aside
-      aria-label="Ofertas Notebook e Tecnologia"
+      aria-label="Ofertas em destaque"
       className="overflow-hidden rounded-xl border border-dashed border-[var(--border)] bg-[var(--surface)]"
+      data-fetching={isFetching ? "true" : undefined}
     >
       <div className="flex items-center justify-between gap-2 border-b border-[var(--border)] px-3 py-2">
         <div className="flex flex-wrap items-center gap-2">
           <SponsoredLabel />
           <span className="text-[10px] font-medium uppercase tracking-wide text-[var(--muted)]">
-            Notebook · Tecnologia
+            Ofertas · Shopee
           </span>
         </div>
         {dotCount > 1 && (

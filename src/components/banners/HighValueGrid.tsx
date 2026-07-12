@@ -11,18 +11,23 @@ type Props = {
   limit?: number;
 };
 
-const GRID_POOL_MULTIPLIER = 2;
-
 export function HighValueGrid({ minPrice, limit = 12 }: Props) {
-  const poolLimit = Math.max(limit * GRID_POOL_MULTIPLIER, 16);
-  const { data, isSuccess, isLoading, isError } = useHighValueProducts({
-    minPrice,
-    limit: poolLimit,
-  });
+  const poolLimit = Math.max(limit * 2, 16);
+  const { data, dataUpdatedAt, isSuccess, isLoading, isError } =
+    useHighValueProducts({
+      minPrice,
+      limit: poolLimit,
+    });
   const pool = data?.items ?? [];
-  const { items } = useRotatingBanners(pool, limit, BANNER_ROTATE_MS);
+  const { items } = useRotatingBanners(
+    pool,
+    limit,
+    BANNER_ROTATE_MS,
+    0,
+    dataUpdatedAt,
+  );
 
-  if (isLoading) {
+  if (isLoading && !items.length) {
     return (
       <section
         aria-label="Carregando aparelhos de alto valor"
@@ -41,7 +46,8 @@ export function HighValueGrid({ minPrice, limit = 12 }: Props) {
     );
   }
 
-  if (isError || !isSuccess || !items.length) return null;
+  if ((isError || !isSuccess) && !items.length) return null;
+  if (!items.length) return null;
 
   return (
     <section aria-label="Aparelhos de alto valor" className="space-y-3">
@@ -66,7 +72,7 @@ function Header() {
           Aparelhos de alto valor
         </h2>
         <p className="mt-0.5 text-xs text-[var(--muted)]">
-          Notebook, PC e tech — ofertas Shopee
+          Ofertas do catálogo Shopee — atualizam a cada 30s
         </p>
       </div>
       <SponsoredLabel />
