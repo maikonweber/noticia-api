@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ArticleCard } from "@/components/articles/ArticleCard";
 import { CategoryTabs } from "@/components/articles/CategoryTabs";
 import { EmptyState } from "@/components/articles/EmptyState";
@@ -27,6 +27,13 @@ export function FeedView({ category }: Props) {
   const [page, setPage] = useState(1);
 
   const resetPage = useCallback(() => setPage(1), []);
+
+  // Garante estado limpo ao trocar de categoria via rota
+  useEffect(() => {
+    setQ("");
+    setSourceName(undefined);
+    setPage(1);
+  }, [category]);
 
   const handleSearch = (value: string) => {
     setQ(value);
