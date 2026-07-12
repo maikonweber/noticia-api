@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { FeedView } from "@/components/feed/FeedView";
-import type { Category } from "@/lib/api/types";
+import { fetchArticles } from "@/lib/api/client";
+import type { ArticlesResponse, Category } from "@/lib/api/types";
 import { CATEGORIES } from "@/lib/categories";
 import { buildCategoryMetadata } from "@/lib/seo";
 
@@ -27,5 +28,19 @@ export default async function CategoryPage({ params }: Props) {
   const { slug } = await params;
   if (!VALID.has(slug as Category)) notFound();
 
-  return <FeedView category={slug as Category} />;
+  const category = slug as Category;
+  let initialArticles: ArticlesResponse | undefined;
+  try {
+    initialArticles = await fetchArticles({
+      category,
+      page: 1,
+      limit: 20,
+    });
+  } catch {
+    initialArticles = undefined;
+  }
+
+  return (
+    <FeedView category={category} initialArticles={initialArticles} />
+  );
 }

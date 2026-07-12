@@ -14,14 +14,16 @@ import { InlineBanner } from "@/components/banners/InlineBanner";
 import { SidebarBanner } from "@/components/banners/SidebarBanner";
 import { Spinner } from "@/components/ui/Spinner";
 import { useArticles, useSources } from "@/lib/api/hooks";
-import type { Category } from "@/lib/api/types";
+import type { ArticlesResponse, Category } from "@/lib/api/types";
 import { CATEGORIES } from "@/lib/categories";
 
 type Props = {
   category: Category;
+  /** Primeira página SSR — melhora indexação */
+  initialArticles?: ArticlesResponse;
 };
 
-export function FeedView({ category }: Props) {
+export function FeedView({ category, initialArticles }: Props) {
   const [q, setQ] = useState("");
   const [sourceName, setSourceName] = useState<string | undefined>();
   const [page, setPage] = useState(1);
@@ -45,12 +47,18 @@ export function FeedView({ category }: Props) {
     resetPage();
   };
 
-  const articlesQuery = useArticles({
+  const listParams = {
     category,
     q: q || undefined,
     sourceName,
     page,
     limit: 20,
+  };
+
+  const isDefaultList = page === 1 && !q && !sourceName;
+
+  const articlesQuery = useArticles(listParams, {
+    initialData: isDefaultList ? initialArticles : undefined,
   });
 
   const sourcesQuery = useSources(category);
