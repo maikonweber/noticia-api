@@ -14,6 +14,15 @@ import {
   fetchStats,
   runIngestion,
 } from "./client";
+import {
+  BANNER_LIMIT,
+  fetchHeroBanners,
+  fetchHighValueProducts,
+  fetchNotebookBanners,
+  fetchSidebarOffers,
+  HIGH_VALUE_LIMIT,
+  HIGH_VALUE_MIN_PRICE,
+} from "./offers";
 import type { ArticlesQuery, BannersQuery, Category } from "./types";
 
 const STALE_MS = 3 * 60 * 1000;
@@ -81,6 +90,47 @@ export function useFeaturedBanners(params?: {
   return useQuery({
     queryKey: ["banners", "featured", params],
     queryFn: () => fetchFeaturedBanners(params),
+    staleTime: BANNERS_STALE_MS,
+    retry: 1,
+  });
+}
+
+export function useNotebookBanners(limit = BANNER_LIMIT) {
+  return useQuery({
+    queryKey: ["offers", "notebook", limit],
+    queryFn: () => fetchNotebookBanners(limit),
+    staleTime: BANNERS_STALE_MS,
+    retry: 1,
+  });
+}
+
+export function useHeroBanners(limit = 5) {
+  return useQuery({
+    queryKey: ["offers", "hero", limit],
+    queryFn: () => fetchHeroBanners(limit),
+    staleTime: BANNERS_STALE_MS,
+    retry: 1,
+  });
+}
+
+export function useSidebarOffers(limit = 4) {
+  return useQuery({
+    queryKey: ["offers", "sidebar", limit],
+    queryFn: () => fetchSidebarOffers(limit),
+    staleTime: BANNERS_STALE_MS,
+    retry: 1,
+  });
+}
+
+export function useHighValueProducts(options?: {
+  minPrice?: number;
+  limit?: number;
+}) {
+  const minPrice = options?.minPrice ?? HIGH_VALUE_MIN_PRICE;
+  const limit = options?.limit ?? HIGH_VALUE_LIMIT;
+  return useQuery({
+    queryKey: ["offers", "high-value", minPrice, limit],
+    queryFn: () => fetchHighValueProducts({ minPrice, limit }),
     staleTime: BANNERS_STALE_MS,
     retry: 1,
   });

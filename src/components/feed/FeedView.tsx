@@ -9,7 +9,9 @@ import { Pagination } from "@/components/articles/Pagination";
 import { SearchBar } from "@/components/articles/SearchBar";
 import { SourceFilters } from "@/components/articles/SourceFilters";
 import { HeroCarousel } from "@/components/banners/HeroCarousel";
+import { HighValueGrid } from "@/components/banners/HighValueGrid";
 import { InlineBanner } from "@/components/banners/InlineBanner";
+import { SidebarBanner } from "@/components/banners/SidebarBanner";
 import { Spinner } from "@/components/ui/Spinner";
 import { useArticles, useSources } from "@/lib/api/hooks";
 import type { Category } from "@/lib/api/types";
@@ -50,6 +52,8 @@ export function FeedView() {
   const sourcesQuery = useSources(category);
   const showAdmin = process.env.NEXT_PUBLIC_ENABLE_ADMIN === "true";
   const catMeta = CATEGORIES.find((c) => c.id === category);
+  const showTechOffers =
+    category === "tecnologia" || category === "programacao";
 
   return (
     <div className="space-y-8">
@@ -76,42 +80,59 @@ export function FeedView() {
 
       <HeroCarousel />
 
-      <section>
-        {articlesQuery.isLoading && (
-          <div className="flex justify-center py-20">
-            <Spinner className="h-8 w-8" />
-          </div>
-        )}
-
-        {articlesQuery.isError && (
-          <ErrorState onRetry={() => articlesQuery.refetch()} />
-        )}
-
-        {articlesQuery.isSuccess && articlesQuery.data.total === 0 && (
-          <EmptyState showAdminLink={showAdmin} />
-        )}
-
-        {articlesQuery.isSuccess && articlesQuery.data.total > 0 && (
-          <div className="space-y-6">
-            <div className="grid gap-4">
-              {articlesQuery.data.items.map((article, index) => (
-                <div key={article.id} className="contents">
-                  <ArticleCard article={article} />
-                  {index === 7 && (
-                    <InlineBanner page={page} variant="compact" />
-                  )}
-                </div>
-              ))}
+      <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_220px] lg:items-start lg:gap-8">
+        <section className="min-w-0 space-y-6">
+          {articlesQuery.isLoading && (
+            <div className="flex justify-center py-20">
+              <Spinner className="h-8 w-8" />
             </div>
-            <Pagination
-              page={articlesQuery.data.page}
-              totalPages={articlesQuery.data.totalPages}
-              total={articlesQuery.data.total}
-              onPageChange={setPage}
-            />
+          )}
+
+          {articlesQuery.isError && (
+            <ErrorState onRetry={() => articlesQuery.refetch()} />
+          )}
+
+          {articlesQuery.isSuccess && articlesQuery.data.total === 0 && (
+            <EmptyState showAdminLink={showAdmin} />
+          )}
+
+          {articlesQuery.isSuccess && articlesQuery.data.total > 0 && (
+            <div className="space-y-6">
+              <div className="grid gap-4">
+                {articlesQuery.data.items.map((article, index) => (
+                  <div key={article.id} className="contents">
+                    <ArticleCard article={article} />
+                    {(index === 2 || index === 7 || index === 14) && (
+                      <InlineBanner
+                        page={page + index}
+                        variant={index === 7 ? "card" : "compact"}
+                        focus="notebook"
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
+              <Pagination
+                page={articlesQuery.data.page}
+                totalPages={articlesQuery.data.totalPages}
+                total={articlesQuery.data.total}
+                onPageChange={setPage}
+              />
+            </div>
+          )}
+
+          {/* Mobile: ofertas laterais viram faixa abaixo do feed */}
+          <div className="lg:hidden">
+            <SidebarBanner limit={2} title="Ofertas notebook" />
           </div>
-        )}
-      </section>
+        </section>
+
+        <aside className="mt-8 hidden lg:mt-0 lg:block">
+          <SidebarBanner limit={4} title="Notebooks e tech" />
+        </aside>
+      </div>
+
+      {showTechOffers && <HighValueGrid />}
     </div>
   );
 }

@@ -24,7 +24,7 @@ export function BannerImage({
     // eslint-disable-next-line @next/next/no-img-element
     <img
       src={banner.imageUrl ?? PLACEHOLDER_IMAGE}
-      alt=""
+      alt={banner.title}
       loading="lazy"
       className={`object-cover ${className}`}
     />

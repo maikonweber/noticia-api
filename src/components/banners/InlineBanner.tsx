@@ -1,6 +1,6 @@
 "use client";
 
-import { useBanners } from "@/lib/api/hooks";
+import { useBanners, useNotebookBanners } from "@/lib/api/hooks";
 import type { Banner } from "@/lib/api/types";
 import { formatPriceRange } from "@/lib/format";
 import { BannerAnchor, BannerImage, SponsoredLabel } from "./shared";
@@ -8,18 +8,49 @@ import { BannerAnchor, BannerImage, SponsoredLabel } from "./shared";
 type Props = {
   page?: number;
   variant?: "compact" | "card";
+  /** Prefere ofertas notebook; senão featured genérico */
+  focus?: "notebook" | "featured";
 };
 
-export function InlineBanner({ page = 1, variant = "compact" }: Props) {
-  const { data, isSuccess } = useBanners({
+export function InlineBanner({
+  page = 1,
+  variant = "compact",
+  focus = "notebook",
+}: Props) {
+  const notebookQuery = useNotebookBanners(8);
+  const featuredQuery = useBanners({
     featured: true,
     limit: 1,
     page,
   });
 
-  if (!isSuccess || !data.items.length) return null;
+  const notebookItems = notebookQuery.data?.items ?? [];
+  const featuredItems = featuredQuery.data?.items ?? [];
 
-  const banner = data.items[0];
+  let banner: Banner | undefined;
+  if (focus === "notebook" && notebookItems.length > 0) {
+    banner = notebookItems[(page - 1) % notebookItems.length];
+  } else if (featuredItems.length > 0) {
+    banner = featuredItems[0];
+  } else if (notebookItems.length > 0) {
+    banner = notebookItems[0];
+  }
+
+  const loading =
+    focus === "notebook"
+      ? notebookQuery.isLoading
+      : featuredQuery.isLoading || notebookQuery.isLoading;
+
+  if (loading) {
+    return (
+      <div
+        aria-hidden
+        className="h-16 animate-pulse rounded-xl border border-dashed border-[var(--border)] bg-[var(--elevated)]/40"
+      />
+    );
+  }
+
+  if (!banner) return null;
 
   if (variant === "card") {
     return <InlineBannerCard banner={banner} />;
@@ -50,7 +81,11 @@ function InlineBannerCompact({ banner }: { banner: Banner }) {
             {banner.title}
           </p>
           <p className="mt-0.5 text-xs text-[var(--muted)]">
-            {price && <span className="mr-2 font-semibold text-[var(--foreground)]">{price}</span>}
+            {price && (
+              <span className="mr-2 font-semibold text-[var(--foreground)]">
+                {price}
+              </span>
+            )}
             Ver oferta na Shopee ↗
           </p>
         </div>
@@ -82,9 +117,14 @@ function InlineBannerCard({ banner }: { banner: Banner }) {
               </span>
             )}
             {price && (
-              <span className="font-semibold text-[var(--foreground)]">{price}</span>
+              <span className="font-semibold text-[var(--foreground)]">
+                {price}
+              </span>
             )}
           </div>
+          <span className="mt-2 inline-block text-xs font-medium text-[var(--accent)]">
+            Ver oferta ↗
+          </span>
         </div>
       </BannerAnchor>
     </aside>

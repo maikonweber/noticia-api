@@ -72,7 +72,7 @@ export type ArticlesQuery = {
 export type BannerType = "product" | "shop" | "campaign";
 
 export type Banner = {
-  id: number;
+  id: number | string;
   type: BannerType;
   externalId: string;
   title: string;
@@ -88,7 +88,7 @@ export type Banner = {
   commission: number | null;
   sales: number | null;
   rating: number | null;
-  shop: { id: number; name: string } | null;
+  shop: { id: number | string; name: string } | null;
   categoryId: number | null;
   periodStart: string | null;
   periodEnd: string | null;
