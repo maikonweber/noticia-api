@@ -17,19 +17,16 @@ import { useArticles, useSources } from "@/lib/api/hooks";
 import type { Category } from "@/lib/api/types";
 import { CATEGORIES } from "@/lib/categories";
 
-export function FeedView() {
-  const [category, setCategory] = useState<Category>("tecnologia");
+type Props = {
+  category: Category;
+};
+
+export function FeedView({ category }: Props) {
   const [q, setQ] = useState("");
   const [sourceName, setSourceName] = useState<string | undefined>();
   const [page, setPage] = useState(1);
 
   const resetPage = useCallback(() => setPage(1), []);
-
-  const handleCategory = (c: Category) => {
-    setCategory(c);
-    setSourceName(undefined);
-    resetPage();
-  };
 
   const handleSearch = (value: string) => {
     setQ(value);
@@ -60,15 +57,15 @@ export function FeedView() {
       <section className="space-y-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-            Feed de notícias
+            Notícias de {catMeta?.label ?? category}
           </h1>
           {catMeta && (
             <p className="mt-1 text-sm text-[var(--muted)]">
-              {catMeta.description}
+              {catMeta.description}. Atualizado continuamente no Notice.
             </p>
           )}
         </div>
-        <CategoryTabs value={category} onChange={handleCategory} />
+        <CategoryTabs value={category} />
         <SearchBar value={q} onChange={handleSearch} />
         <SourceFilters
           sources={sourcesQuery.data?.items ?? []}
@@ -81,7 +78,10 @@ export function FeedView() {
       <HeroCarousel />
 
       <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_220px] lg:items-start lg:gap-8">
-        <section className="min-w-0 space-y-6">
+        <section
+          className="min-w-0 space-y-6"
+          aria-label={`Lista de notícias — ${catMeta?.label ?? category}`}
+        >
           {articlesQuery.isLoading && (
             <div className="flex justify-center py-20">
               <Spinner className="h-8 w-8" />
@@ -98,6 +98,12 @@ export function FeedView() {
 
           {articlesQuery.isSuccess && articlesQuery.data.total > 0 && (
             <div className="space-y-6">
+              <p className="text-xs text-[var(--muted)]">
+                {articlesQuery.data.total}{" "}
+                {articlesQuery.data.total === 1
+                  ? "notícia encontrada"
+                  : "notícias encontradas"}
+              </p>
               <div className="grid gap-4">
                 {articlesQuery.data.items.map((article, index) => (
                   <div key={article.id} className="contents">
@@ -121,13 +127,12 @@ export function FeedView() {
             </div>
           )}
 
-          {/* Mobile: ofertas laterais viram faixa abaixo do feed */}
           <div className="lg:hidden">
             <SidebarBanner limit={2} title="Ofertas notebook" />
           </div>
         </section>
 
-        <aside className="mt-8 hidden lg:mt-0 lg:block">
+        <aside className="mt-8 hidden lg:mt-0 lg:block" aria-label="Ofertas">
           <SidebarBanner limit={4} title="Notebooks e tech" />
         </aside>
       </div>

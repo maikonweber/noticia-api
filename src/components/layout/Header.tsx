@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { CATEGORIES } from "@/lib/categories";
+import { categoryPath, SITE_NAME } from "@/lib/seo";
 
 const links = [
   { href: "/", label: "Feed" },
@@ -17,15 +19,29 @@ export function Header() {
           </span>
           <div className="leading-tight">
             <span className="block text-sm font-semibold tracking-tight">
-              Notice
+              {SITE_NAME}
             </span>
             <span className="block text-[10px] uppercase tracking-widest text-[var(--muted)]">
-              Muttercorp
+              Notícias
             </span>
           </div>
         </Link>
 
-        <nav className="flex items-center gap-1 text-sm">
+        <nav
+          aria-label="Principal"
+          className="flex items-center gap-1 text-sm"
+        >
+          <div className="mr-1 hidden items-center gap-0.5 md:flex">
+            {CATEGORIES.slice(0, 3).map((cat) => (
+              <Link
+                key={cat.id}
+                href={categoryPath(cat.id)}
+                className="rounded-md px-2.5 py-1.5 text-xs text-[var(--muted)] transition-colors hover:bg-[var(--elevated)] hover:text-[var(--foreground)]"
+              >
+                {cat.label}
+              </Link>
+            ))}
+          </div>
           {links.map((link) => (
             <Link
               key={link.href}
