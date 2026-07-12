@@ -1,4 +1,13 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+import { CATEGORIES } from "@/lib/categories";
+import { categoryPath, SITE_NAME } from "@/lib/seo";
+
+export const metadata: Metadata = {
+  title: "Página não encontrada",
+  description: `A página solicitada não existe no ${SITE_NAME}. Volte ao feed de notícias.`,
+  robots: { index: false, follow: true },
+};
 
 export default function NotFound() {
   return (
@@ -9,11 +18,22 @@ export default function NotFound() {
         O conteúdo que você procura não existe ou foi removido.
       </p>
       <Link
-        href="/"
-        className="rounded-xl bg-[var(--accent)] px-5 py-2.5 text-sm font-semibold text-[var(--accent-fg)]"
+        href={categoryPath("tecnologia")}
+        className="mb-10 rounded-xl bg-[var(--accent)] px-5 py-2.5 text-sm font-semibold text-[var(--accent-fg)]"
       >
         Ir para o feed
       </Link>
+      <nav aria-label="Categorias" className="flex flex-wrap justify-center gap-2">
+        {CATEGORIES.map((cat) => (
+          <Link
+            key={cat.id}
+            href={categoryPath(cat.id)}
+            className="rounded-full bg-[var(--elevated)] px-3 py-1.5 text-xs text-[var(--muted)] hover:text-[var(--foreground)]"
+          >
+            {cat.label}
+          </Link>
+        ))}
+      </nav>
     </div>
   );
 }
