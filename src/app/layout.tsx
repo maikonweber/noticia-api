@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Header } from "@/components/layout/Header";
+import { SiteFooter } from "@/components/layout/SiteFooter";
 import { QueryProvider } from "@/components/providers/QueryProvider";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { buildRootMetadata, buildWebsiteJsonLd } from "@/lib/seo";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -14,14 +17,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: "Notice — Muttercorp",
-    template: "%s · Notice",
-  },
-  description:
-    "Agregador de notícias por categoria: investimentos, tecnologia, programação, esportes e entretenimento.",
-};
+export const metadata: Metadata = buildRootMetadata();
 
 export default function RootLayout({
   children,
@@ -34,22 +30,13 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
+        <JsonLd data={buildWebsiteJsonLd()} />
         <QueryProvider>
           <Header />
           <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6">
             {children}
           </main>
-          <footer className="border-t border-[var(--border)] py-6 text-center text-xs text-[var(--muted)]">
-            Notice API ·{" "}
-            <a
-              href="https://notice.muttercorp.com.br/docs"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline hover:text-[var(--foreground)]"
-            >
-              Swagger
-            </a>
-          </footer>
+          <SiteFooter />
         </QueryProvider>
       </body>
     </html>
