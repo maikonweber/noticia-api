@@ -32,7 +32,7 @@ export function Header() {
           className="flex items-center gap-1 text-sm"
         >
           <div className="mr-1 hidden items-center gap-0.5 md:flex">
-            {CATEGORIES.slice(0, 3).map((cat) => (
+            {CATEGORIES.slice(0, 4).map((cat) => (
               <Link
                 key={cat.id}
                 href={categoryPath(cat.id)}

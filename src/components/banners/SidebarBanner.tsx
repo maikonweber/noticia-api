@@ -1,6 +1,7 @@
 "use client";
 
 import { useSidebarOffers } from "@/lib/api/hooks";
+import { BANNER_ROTATE_MS, useRotatingBanners } from "@/lib/banners/rotate";
 import type { Banner } from "@/lib/api/types";
 import { formatPriceRange } from "@/lib/format";
 import { BannerAnchor, BannerImage, SponsoredLabel } from "./shared";
@@ -10,8 +11,16 @@ type Props = {
   title?: string;
 };
 
-export function SidebarBanner({ limit = 4, title = "Notebooks e tech" }: Props) {
-  const { data, isSuccess, isLoading } = useSidebarOffers(limit);
+const SIDEBAR_POOL_MULTIPLIER = 4;
+
+export function SidebarBanner({
+  limit = 4,
+  title = "Notebooks e tech",
+}: Props) {
+  const poolSize = Math.max(limit * SIDEBAR_POOL_MULTIPLIER, 12);
+  const { data, isSuccess, isLoading } = useSidebarOffers(poolSize);
+  const pool = data?.items ?? [];
+  const { items } = useRotatingBanners(pool, limit, BANNER_ROTATE_MS);
 
   if (isLoading) {
     return (
@@ -26,15 +35,15 @@ export function SidebarBanner({ limit = 4, title = "Notebooks e tech" }: Props) 
     );
   }
 
-  if (!isSuccess || !data.items.length) return null;
+  if (!isSuccess || !items.length) return null;
 
   return (
     <div className="sticky top-20 space-y-3">
       <p className="px-0.5 text-[11px] font-semibold uppercase tracking-wider text-[var(--muted)]">
         {title}
       </p>
-      {data.items.map((banner) => (
-        <SidebarBannerCard key={banner.id} banner={banner} />
+      {items.map((banner) => (
+        <SidebarBannerCard key={`${banner.id}-${banner.externalId}`} banner={banner} />
       ))}
     </div>
   );
@@ -43,19 +52,24 @@ export function SidebarBanner({ limit = 4, title = "Notebooks e tech" }: Props) 
 export function SidebarBannerStatic({
   banners,
   title = "Notebooks e tech",
+  limit,
 }: {
   banners: Banner[];
   title?: string;
+  limit?: number;
 }) {
-  if (!banners.length) return null;
+  const count = limit ?? banners.length;
+  const { items } = useRotatingBanners(banners, count, BANNER_ROTATE_MS);
+
+  if (!items.length) return null;
 
   return (
     <div className="sticky top-20 space-y-3">
       <p className="px-0.5 text-[11px] font-semibold uppercase tracking-wider text-[var(--muted)]">
         {title}
       </p>
-      {banners.map((banner) => (
-        <SidebarBannerCard key={banner.id} banner={banner} />
+      {items.map((banner) => (
+        <SidebarBannerCard key={`${banner.id}-${banner.externalId}`} banner={banner} />
       ))}
     </div>
   );

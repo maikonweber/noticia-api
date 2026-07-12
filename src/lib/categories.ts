@@ -11,6 +11,11 @@ export const CATEGORIES: {
     description: "Mercado, economia e finanças",
   },
   {
+    id: "mercado-crypto",
+    label: "Mercado Crypto",
+    description: "Bitcoin, altcoins, DeFi e blockchain",
+  },
+  {
     id: "tecnologia",
     label: "Tecnologia",
     description: "Inovação, gadgets e indústria tech",

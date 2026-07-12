@@ -1,5 +1,6 @@
 export type Category =
   | "investimentos"
+  | "mercado-crypto"
   | "tecnologia"
   | "programacao"
   | "esportes"

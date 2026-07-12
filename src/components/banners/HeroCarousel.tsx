@@ -1,30 +1,22 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
 import { useHeroBanners } from "@/lib/api/hooks";
+import { BANNER_ROTATE_MS, useRotatingBanners } from "@/lib/banners/rotate";
 import { formatPriceRange } from "@/lib/format";
 import { BannerAnchor, BannerImage, SponsoredLabel } from "./shared";
 
-const AUTOPLAY_MS = 8000;
+/** Pool maior para variar a cada reload / rotação */
+const HERO_POOL = 16;
 
 export function HeroCarousel() {
-  const { data, isSuccess, isLoading, isError } = useHeroBanners(5);
-  const items = data?.items ?? [];
-  const [index, setIndex] = useState(0);
-
-  const goTo = useCallback(
-    (next: number) => {
-      if (items.length === 0) return;
-      setIndex((next + items.length) % items.length);
-    },
-    [items.length],
+  const { data, isSuccess, isLoading, isError } = useHeroBanners(HERO_POOL);
+  const pool = data?.items ?? [];
+  const { items, offset, total } = useRotatingBanners(
+    pool,
+    1,
+    BANNER_ROTATE_MS,
   );
-
-  useEffect(() => {
-    if (items.length <= 1) return;
-    const timer = window.setInterval(() => goTo(index + 1), AUTOPLAY_MS);
-    return () => window.clearInterval(timer);
-  }, [goTo, index, items.length]);
+  const banner = items[0];
 
   if (isLoading) {
     return (
@@ -35,10 +27,11 @@ export function HeroCarousel() {
     );
   }
 
-  if (isError || !isSuccess || items.length === 0) return null;
+  if (isError || !isSuccess || !banner) return null;
 
-  const banner = items[index];
   const price = formatPriceRange(banner);
+  const dotCount = Math.min(5, total);
+  const activeDot = total > 0 ? offset % dotCount : 0;
 
   return (
     <aside
@@ -52,19 +45,15 @@ export function HeroCarousel() {
             Notebook · Tecnologia
           </span>
         </div>
-        {items.length > 1 && (
-          <div className="flex items-center gap-1.5">
-            {items.map((item, i) => (
-              <button
-                key={item.id}
-                type="button"
-                aria-label={`Oferta ${i + 1} de ${items.length}`}
-                aria-current={i === index ? "true" : undefined}
-                onClick={() => setIndex(i)}
+        {dotCount > 1 && (
+          <div className="flex items-center gap-1.5" aria-hidden>
+            {Array.from({ length: dotCount }).map((_, i) => (
+              <span
+                key={i}
                 className={`h-1.5 rounded-full transition-all ${
-                  i === index
+                  i === activeDot
                     ? "w-4 bg-[var(--accent)]"
-                    : "w-1.5 bg-[var(--border)] hover:bg-[var(--muted)]"
+                    : "w-1.5 bg-[var(--border)]"
                 }`}
               />
             ))}

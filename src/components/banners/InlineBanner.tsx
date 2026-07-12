@@ -1,6 +1,7 @@
 "use client";
 
 import { useBanners, useNotebookBanners } from "@/lib/api/hooks";
+import { BANNER_ROTATE_MS, useRotatingBanner } from "@/lib/banners/rotate";
 import type { Banner } from "@/lib/api/types";
 import { formatPriceRange } from "@/lib/format";
 import { BannerAnchor, BannerImage, SponsoredLabel } from "./shared";
@@ -12,29 +13,31 @@ type Props = {
   focus?: "notebook" | "featured";
 };
 
+const INLINE_POOL = 20;
+
 export function InlineBanner({
   page = 1,
   variant = "compact",
   focus = "notebook",
 }: Props) {
-  const notebookQuery = useNotebookBanners(8);
+  const notebookQuery = useNotebookBanners(INLINE_POOL);
   const featuredQuery = useBanners({
     featured: true,
-    limit: 1,
-    page,
+    limit: INLINE_POOL,
+    page: 1,
   });
 
   const notebookItems = notebookQuery.data?.items ?? [];
   const featuredItems = featuredQuery.data?.items ?? [];
 
-  let banner: Banner | undefined;
-  if (focus === "notebook" && notebookItems.length > 0) {
-    banner = notebookItems[(page - 1) % notebookItems.length];
-  } else if (featuredItems.length > 0) {
-    banner = featuredItems[0];
-  } else if (notebookItems.length > 0) {
-    banner = notebookItems[0];
-  }
+  const pool =
+    focus === "notebook" && notebookItems.length > 0
+      ? notebookItems
+      : featuredItems.length > 0
+        ? featuredItems
+        : notebookItems;
+
+  const banner = useRotatingBanner(pool, BANNER_ROTATE_MS, page);
 
   const loading =
     focus === "notebook"
@@ -132,5 +135,32 @@ function InlineBannerCard({ banner }: { banner: Banner }) {
 }
 
 export function InlineBannerStatic({ banner }: { banner: Banner }) {
-  return <InlineBannerCard banner={banner} />;
+  return <InlineBannerRotating pool={[banner]} />;
+}
+
+/** Versão estática que ainda rotaciona se receber um pool maior via wrapper */
+function InlineBannerRotating({
+  pool,
+  variant = "card",
+}: {
+  pool: Banner[];
+  variant?: "compact" | "card";
+}) {
+  const banner = useRotatingBanner(pool, BANNER_ROTATE_MS);
+  if (!banner) return null;
+  return variant === "card" ? (
+    <InlineBannerCard banner={banner} />
+  ) : (
+    <InlineBannerCompact banner={banner} />
+  );
+}
+
+export function InlineBannerStaticPool({
+  banners,
+  variant = "card",
+}: {
+  banners: Banner[];
+  variant?: "compact" | "card";
+}) {
+  return <InlineBannerRotating pool={banners} variant={variant} />;
 }

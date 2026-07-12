@@ -76,13 +76,14 @@ export function useIngestion() {
   });
 }
 
-const BANNERS_STALE_MS = 10 * 60 * 1000;
+const BANNERS_STALE_MS = 2 * 60 * 1000;
 
 export function useBanners(params: BannersQuery) {
   return useQuery({
     queryKey: ["banners", params],
     queryFn: () => fetchBanners(params),
     staleTime: BANNERS_STALE_MS,
+    refetchOnMount: "always",
     retry: 1,
   });
 }
@@ -95,6 +96,7 @@ export function useFeaturedBanners(params?: {
     queryKey: ["banners", "featured", params],
     queryFn: () => fetchFeaturedBanners(params),
     staleTime: BANNERS_STALE_MS,
+    refetchOnMount: "always",
     retry: 1,
   });
 }
@@ -104,6 +106,7 @@ export function useNotebookBanners(limit = BANNER_LIMIT) {
     queryKey: ["offers", "notebook", limit],
     queryFn: () => fetchNotebookBanners(limit),
     staleTime: BANNERS_STALE_MS,
+    refetchOnMount: "always",
     retry: 1,
   });
 }
@@ -113,6 +116,7 @@ export function useHeroBanners(limit = 5) {
     queryKey: ["offers", "hero", limit],
     queryFn: () => fetchHeroBanners(limit),
     staleTime: BANNERS_STALE_MS,
+    refetchOnMount: "always",
     retry: 1,
   });
 }
@@ -122,6 +126,7 @@ export function useSidebarOffers(limit = 4) {
     queryKey: ["offers", "sidebar", limit],
     queryFn: () => fetchSidebarOffers(limit),
     staleTime: BANNERS_STALE_MS,
+    refetchOnMount: "always",
     retry: 1,
   });
 }
@@ -136,6 +141,7 @@ export function useHighValueProducts(options?: {
     queryKey: ["offers", "high-value", minPrice, limit],
     queryFn: () => fetchHighValueProducts({ minPrice, limit }),
     staleTime: BANNERS_STALE_MS,
+    refetchOnMount: "always",
     retry: 1,
   });
 }

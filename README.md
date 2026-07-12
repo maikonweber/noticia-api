@@ -4,7 +4,7 @@ Frontend do agregador de notícias [Notice API](https://notice.muttercorp.com.br
 
 ## Funcionalidades
 
-- **Categorias** (`/categoria/[slug]`) — rotas indexáveis por tema (tecnologia, investimentos, etc.)
+- **Categorias** (`/categoria/[slug]`) — rotas indexáveis (investimentos, mercado-crypto, tecnologia, programação, esportes, entretenimento)
 - **Home** (`/`) — redireciona para a categoria padrão (tecnologia)
 - **Detalhe** (`/articles/[id]`) — notícia com metadata Open Graph, Twitter e JSON-LD `NewsArticle`
 - **Dashboard** (`/dashboard`) — gráficos (`GET /stats`), `noindex`

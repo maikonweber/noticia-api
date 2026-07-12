@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { InlineBannerStatic } from "@/components/banners/InlineBanner";
+import { InlineBannerStaticPool } from "@/components/banners/InlineBanner";
 import { SidebarBannerStatic } from "@/components/banners/SidebarBanner";
 import { ArticleBody } from "@/components/articles/ArticleBody";
 import { EnrichedBadge } from "@/components/articles/EnrichedBadge";
@@ -64,19 +64,16 @@ export default async function ArticlePage({ params }: Props) {
   const categoryHref = categoryPath(article.category);
   const publishedIso = article.publishedAt ?? article.collectedAt;
 
-  let inlineBanner: Banner | null = null;
+  let notebookPool: Banner[] = [];
   let sidebarBanners: Banner[] = [];
   try {
     const [notebookRes, sidebarRes] = await Promise.all([
-      fetchNotebookBanners(8),
-      fetchSidebarOffers(4),
+      fetchNotebookBanners(16),
+      fetchSidebarOffers(16),
     ]);
-    const notebooks = notebookRes.items;
-    if (notebooks.length > 0) {
-      inlineBanner = notebooks[numId % notebooks.length] ?? null;
-    }
+    notebookPool = notebookRes.items;
     sidebarBanners =
-      sidebarRes.items.length > 0 ? sidebarRes.items : notebooks.slice(0, 4);
+      sidebarRes.items.length > 0 ? sidebarRes.items : notebookPool;
   } catch {
     /* banners são opcionais */
   }
@@ -175,9 +172,9 @@ export default async function ArticlePage({ params }: Props) {
             </p>
           )}
 
-          {inlineBanner && (
+          {notebookPool.length > 0 && (
             <div className="mb-8">
-              <InlineBannerStatic banner={inlineBanner} />
+              <InlineBannerStaticPool banners={notebookPool} />
             </div>
           )}
 
@@ -218,7 +215,8 @@ export default async function ArticlePage({ params }: Props) {
           {sidebarBanners.length > 0 && (
             <div className="mt-10 lg:hidden">
               <SidebarBannerStatic
-                banners={sidebarBanners.slice(0, 2)}
+                banners={sidebarBanners}
+                limit={2}
                 title="Ofertas notebook"
               />
             </div>
@@ -229,6 +227,7 @@ export default async function ArticlePage({ params }: Props) {
           <aside className="hidden lg:block" aria-label="Ofertas">
             <SidebarBannerStatic
               banners={sidebarBanners}
+              limit={4}
               title="Notebooks e tech"
             />
           </aside>

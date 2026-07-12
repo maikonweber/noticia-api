@@ -1,6 +1,7 @@
 "use client";
 
 import { useHighValueProducts } from "@/lib/api/hooks";
+import { BANNER_ROTATE_MS, useRotatingBanners } from "@/lib/banners/rotate";
 import type { Banner } from "@/lib/api/types";
 import { formatPrice } from "@/lib/format";
 import { BannerAnchor, BannerImage, SponsoredLabel } from "./shared";
@@ -10,15 +11,23 @@ type Props = {
   limit?: number;
 };
 
-export function HighValueGrid({ minPrice, limit }: Props) {
+const GRID_POOL_MULTIPLIER = 2;
+
+export function HighValueGrid({ minPrice, limit = 12 }: Props) {
+  const poolLimit = Math.max(limit * GRID_POOL_MULTIPLIER, 16);
   const { data, isSuccess, isLoading, isError } = useHighValueProducts({
     minPrice,
-    limit,
+    limit: poolLimit,
   });
+  const pool = data?.items ?? [];
+  const { items } = useRotatingBanners(pool, limit, BANNER_ROTATE_MS);
 
   if (isLoading) {
     return (
-      <section aria-label="Carregando aparelhos de alto valor" className="space-y-3">
+      <section
+        aria-label="Carregando aparelhos de alto valor"
+        className="space-y-3"
+      >
         <Header />
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
@@ -32,14 +41,17 @@ export function HighValueGrid({ minPrice, limit }: Props) {
     );
   }
 
-  if (isError || !isSuccess || !data.items.length) return null;
+  if (isError || !isSuccess || !items.length) return null;
 
   return (
     <section aria-label="Aparelhos de alto valor" className="space-y-3">
       <Header />
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-        {data.items.map((banner) => (
-          <HighValueCard key={banner.id} banner={banner} />
+        {items.map((banner) => (
+          <HighValueCard
+            key={`${banner.id}-${banner.externalId}`}
+            banner={banner}
+          />
         ))}
       </div>
     </section>
