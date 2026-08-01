@@ -53,7 +53,7 @@ export default function OpenGraphImage() {
             {SITE_TAGLINE}
           </span>
           <span style={{ fontSize: 24, color: "#a39e96", maxWidth: 800 }}>
-            Investimentos, crypto, tecnologia, programação, esportes e entretenimento
+            Investimentos, crypto, tecnologia, programação, esportes, entretenimento e games
           </span>
         </div>
       </div>

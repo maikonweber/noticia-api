@@ -35,6 +35,11 @@ export const CATEGORIES: {
     label: "Entretenimento",
     description: "Cinema, música, TV e cultura pop",
   },
+  {
+    id: "games",
+    label: "Games",
+    description: "Games, eSports, lançamentos e indústria",
+  },
 ];
 
 export const CATEGORY_LABEL: Record<string, string> = Object.fromEntries(
