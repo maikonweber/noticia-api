@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Header } from "@/components/layout/Header";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { QueryProvider } from "@/components/providers/QueryProvider";
+import { Analytics } from "@vercel/analytics/next";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { buildRootMetadata, buildWebsiteJsonLd } from "@/lib/seo";
 import "./globals.css";
@@ -37,6 +38,7 @@ export default function RootLayout({
             {children}
           </main>
           <SiteFooter />
+          <Analytics />
         </QueryProvider>
       </body>
     </html>
