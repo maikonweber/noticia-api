@@ -6,7 +6,7 @@ import { getArticlePreview } from "@/lib/articles";
 export const SITE_NAME = "Notice";
 export const SITE_TAGLINE = "Notícias por categoria";
 export const SITE_DESCRIPTION =
-  "Agregador de notícias em português: investimentos, mercado crypto, tecnologia, programação, esportes, entretenimento e games. Atualizado continuamente.";
+  "Agregador de notícias em português: investimentos, mercado crypto, tecnologia, programação, esportes, entretenimento, games e cinema. Atualizado continuamente.";
 
 export const SITE_KEYWORDS = [
   "notícias",
@@ -24,6 +24,10 @@ export const SITE_KEYWORDS = [
   "games",
   "jogos",
   "eSports",
+  "cinema",
+  "séries",
+  "filmes",
+  "streaming",
   "feed de notícias",
   "Brasil",
 ] as const;

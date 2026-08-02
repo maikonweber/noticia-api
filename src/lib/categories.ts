@@ -33,12 +33,17 @@ export const CATEGORIES: {
   {
     id: "entretenimento",
     label: "Entretenimento",
-    description: "Cinema, música, TV e cultura pop",
+    description: "Música, celebridades, TV e cultura pop",
   },
   {
     id: "games",
     label: "Games",
     description: "Games, eSports, lançamentos e indústria",
+  },
+  {
+    id: "cinema",
+    label: "Cinema e Séries",
+    description: "Filmes, séries, streaming e indústria audiovisual",
   },
 ];
 

@@ -5,7 +5,8 @@ export type Category =
   | "programacao"
   | "esportes"
   | "entretenimento"
-  | "games";
+  | "games"
+  | "cinema";
 export type SourceType = "rss" | "html";
 
 export type Article = {
