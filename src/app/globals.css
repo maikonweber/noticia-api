@@ -1,40 +1,111 @@
 @import "tailwindcss";
 
+/* Identidade MutterCorp — tokens alinhados a muttercorp.com.br */
+
 :root {
-  --background: #f4f1ec;
-  --foreground: #1a1814;
-  --surface: #faf8f5;
-  --elevated: #ebe6de;
-  --border: #d4cdc2;
-  --muted: #6b6560;
+  --background: #eef3ef;
+  --foreground: #0c1210;
+  --surface: #f7faf7;
+  --elevated: #e4ebe5;
+  --border: rgba(12, 18, 16, 0.12);
+  --border-strong: rgba(12, 18, 16, 0.22);
+  --muted: #5a6b62;
   --accent: #c45c26;
-  --accent-fg: #fffaf5;
+  --accent-soft: #a84a1c;
+  --accent-fg: #fff8f3;
+  --header-bg: rgba(238, 243, 239, 0.82);
+  --footer-bg: rgba(12, 18, 16, 0.04);
+  --orb-a: #7eb8a8;
+  --orb-b: #d4a07a;
+  --grid-line: rgba(12, 18, 16, 0.05);
+  --noticia: #3a6b8a;
+  --gradient-brand: linear-gradient(135deg, #2a7a6a 0%, #c45c26 100%);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #12100e;
-    --foreground: #f0ebe3;
-    --surface: #1c1916;
-    --elevated: #2a2622;
-    --border: #3d3832;
-    --muted: #a39e96;
-    --accent: #e07a3a;
-    --accent-fg: #1a120c;
+    --background: #0c1210;
+    --foreground: #e8efe9;
+    --surface: #121a17;
+    --elevated: #1a2420;
+    --border: rgba(232, 239, 233, 0.12);
+    --border-strong: rgba(232, 239, 233, 0.28);
+    --muted: #8a9a90;
+    --accent: #c45c26;
+    --accent-soft: #e8a06a;
+    --accent-fg: #fff8f3;
+    --header-bg: rgba(12, 18, 16, 0.72);
+    --footer-bg: rgba(0, 0, 0, 0.35);
+    --orb-a: #1f4d42;
+    --orb-b: #5a2a22;
+    --grid-line: rgba(232, 239, 233, 0.03);
+    --noticia: #7eb0d0;
   }
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-manrope);
+  --font-display: var(--font-syne);
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
+  position: relative;
+  isolation: isolate;
+  min-height: 100%;
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-family: var(--font-manrope), system-ui, sans-serif;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Atmosfera MutterCorp */
+body::before {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 20%, black 20%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 20%, black 20%, transparent 75%);
+}
+
+body::after {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  z-index: -1;
+  width: min(70vw, 520px);
+  height: min(70vw, 520px);
+  top: -12%;
+  left: -8%;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.45;
+  background: radial-gradient(circle, var(--orb-a) 0%, transparent 70%);
+}
+
+.font-display {
+  font-family: var(--font-syne), sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent-soft);
+  font-weight: 600;
 }
 
 ::selection {

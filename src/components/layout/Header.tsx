@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { CATEGORIES } from "@/lib/categories";
 import { categoryPath, SITE_NAME } from "@/lib/seo";
@@ -11,18 +12,27 @@ export function Header() {
   const showAdmin = process.env.NEXT_PUBLIC_ENABLE_ADMIN === "true";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[var(--border)] bg-[var(--surface)]/90 backdrop-blur-md">
-      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
-        <Link href="/" className="group flex items-center gap-2.5">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--accent)] text-sm font-bold text-[var(--accent-fg)]">
-            N
-          </span>
+    <header className="sticky top-0 z-50 border-b border-[var(--border)] bg-[var(--header-bg)] backdrop-blur-[18px]">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
+        <Link
+          href="/"
+          className="group flex items-center gap-3"
+          aria-label={`${SITE_NAME} — MutterCorp`}
+        >
+          <Image
+            src="/logo-128.png"
+            alt="MutterCorp"
+            width={32}
+            height={32}
+            className="transition-transform group-hover:scale-105"
+            priority
+          />
           <div className="leading-tight">
-            <span className="block text-sm font-semibold tracking-tight">
-              {SITE_NAME}
+            <span className="font-display block text-base tracking-tight text-[var(--foreground)] sm:text-lg">
+              MutterCorp
             </span>
-            <span className="block text-[10px] uppercase tracking-widest text-[var(--muted)]">
-              Notícias
+            <span className="block text-[10px] uppercase tracking-[0.16em] text-[var(--muted)]">
+              {SITE_NAME} · Notícias
             </span>
           </div>
         </Link>
@@ -51,6 +61,14 @@ export function Header() {
               {link.label}
             </Link>
           ))}
+          <a
+            href="https://muttercorp.com.br"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden rounded-md px-3 py-1.5 text-[var(--muted)] transition-colors hover:bg-[var(--elevated)] hover:text-[var(--accent-soft)] sm:inline"
+          >
+            Site
+          </a>
           {showAdmin && (
             <Link
               href="/admin"

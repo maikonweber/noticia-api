@@ -6,7 +6,7 @@ import { getArticlePreview } from "@/lib/articles";
 export const SITE_NAME = "Notice";
 export const SITE_TAGLINE = "Notícias por categoria";
 export const SITE_DESCRIPTION =
-  "Agregador de notícias em português: investimentos, mercado crypto, tecnologia, programação, esportes, entretenimento, games e cinema. Atualizado continuamente.";
+  "Agregador de notícias em português da MutterCorp: investimentos, mercado crypto, tecnologia, programação, esportes, entretenimento, games e cinema. Atualizado continuamente.";
 
 export const SITE_KEYWORDS = [
   "notícias",
@@ -69,15 +69,15 @@ export function buildRootMetadata(): Metadata {
   return {
     metadataBase: new URL(url),
     title: {
-      default: `${SITE_NAME} — ${SITE_TAGLINE}`,
+      default: `${SITE_NAME} — MutterCorp`,
       template: `%s · ${SITE_NAME}`,
     },
     description: SITE_DESCRIPTION,
     keywords: [...SITE_KEYWORDS],
-    applicationName: SITE_NAME,
-    authors: [{ name: "Muttercorp" }],
-    creator: "Muttercorp",
-    publisher: "Muttercorp",
+    applicationName: "MutterCorp Notice",
+    authors: [{ name: "MutterCorp" }],
+    creator: "MutterCorp",
+    publisher: "MutterCorp",
     category: "news",
     formatDetection: {
       telephone: false,
@@ -91,13 +91,13 @@ export function buildRootMetadata(): Metadata {
       type: "website",
       locale: "pt_BR",
       url,
-      siteName: SITE_NAME,
-      title: `${SITE_NAME} — ${SITE_TAGLINE}`,
+      siteName: "MutterCorp Notice",
+      title: `${SITE_NAME} — MutterCorp`,
       description: SITE_DESCRIPTION,
     },
     twitter: {
       card: "summary_large_image",
-      title: `${SITE_NAME} — ${SITE_TAGLINE}`,
+      title: `${SITE_NAME} — MutterCorp`,
       description: SITE_DESCRIPTION,
     },
     robots: {
@@ -210,8 +210,8 @@ export function buildNewsArticleJsonLd(article: Article) {
     },
     publisher: {
       "@type": "Organization",
-      name: SITE_NAME,
-      url: getSiteUrl(),
+      name: "MutterCorp",
+      url: "https://muttercorp.com.br",
     },
     articleSection: categoryLabel,
     isAccessibleForFree: true,
@@ -249,8 +249,9 @@ export function buildWebsiteJsonLd() {
     inLanguage: "pt-BR",
     publisher: {
       "@type": "Organization",
-      name: "Muttercorp",
-      url: getSiteUrl(),
+      name: "MutterCorp",
+      url: "https://muttercorp.com.br",
+      logo: "https://news.muttercorp.com.br/logo.png",
     },
     potentialAction: {
       "@type": "SearchAction",
