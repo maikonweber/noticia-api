@@ -5,6 +5,7 @@ import { categoryPath, SITE_NAME } from "@/lib/seo";
 
 const links = [
   { href: "/", label: "Feed" },
+  { href: "/ofertas", label: "Ofertas" },
   { href: "/dashboard", label: "Dashboard" },
 ];
 

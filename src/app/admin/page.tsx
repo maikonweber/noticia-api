@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { AdminPanel } from "@/components/admin/AdminPanel";
+import { WhatsAppOfferAdmin } from "@/components/admin/WhatsAppOfferAdmin";
 
 export const metadata: Metadata = {
   title: "Admin",
@@ -17,10 +18,11 @@ export default function AdminPage() {
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Admin</h1>
         <p className="mt-1 text-sm text-[var(--muted)]">
-          Ingestão manual de notícias via API.
+          Ingestão de notícias e grupos de ofertas no WhatsApp.
         </p>
       </div>
       <AdminPanel />
+      <WhatsAppOfferAdmin />
     </div>
   );
 }

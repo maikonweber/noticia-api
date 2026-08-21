@@ -59,6 +59,14 @@ export function SiteFooter() {
             </li>
             <li>
               <Link
+                href="/ofertas"
+                className="hover:text-[var(--accent-soft)]"
+              >
+                Grupos de Ofertas
+              </Link>
+            </li>
+            <li>
+              <Link
                 href="/dashboard"
                 className="hover:text-[var(--accent-soft)]"
               >
