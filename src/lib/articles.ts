@@ -3,17 +3,8 @@ import type { Article } from "@/lib/api/types";
 export const ARTICLE_PREVIEW_MAX_LENGTH = 180;
 
 export function getArticleDisplayText(article: Article): string {
-  if (article.body?.trim()) return article.body.trim();
   if (article.summary?.trim()) return article.summary.trim();
   return article.title;
-}
-
-export function hasEnrichedBody(article: Article): boolean {
-  return Boolean(article.body?.trim());
-}
-
-export function isEnrichmentPending(article: Article): boolean {
-  return !hasEnrichedBody(article);
 }
 
 export function getArticlePreview(

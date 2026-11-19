@@ -7,8 +7,12 @@ import type {
   BannersResponse,
   FeaturedBannersResponse,
   IngestionResult,
+  OfferGroup,
+  OfferGroupsResponse,
   SourcesResponse,
   StatsResponse,
+  WhatsAppPeerGroup,
+  WhatsAppSession,
 } from "./types";
 
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
@@ -121,4 +125,88 @@ export async function fetchFeaturedBanners(params?: {
     })}`,
     { cache: "no-store" },
   );
+}
+
+export async function fetchOfferRanking(params?: {
+  page?: number;
+  limit?: number;
+}): Promise<BannersResponse> {
+  return apiFetch<BannersResponse>(
+    `/offers/ranking${toSearchParams({
+      page: params?.page ?? 1,
+      limit: params?.limit ?? 24,
+    })}`,
+    { cache: "no-store" },
+  );
+}
+
+export async function fetchOfferGroups(): Promise<OfferGroupsResponse> {
+  return apiFetch<OfferGroupsResponse>("/offer-groups", { cache: "no-store" });
+}
+
+function runnerHeaders(token: string): HeadersInit {
+  return { "X-Runner-Token": token };
+}
+
+export async function fetchWhatsAppSession(
+  token: string,
+): Promise<WhatsAppSession> {
+  return apiFetch<WhatsAppSession>("/whatsapp/session", {
+    headers: runnerHeaders(token),
+    cache: "no-store",
+  });
+}
+
+export async function startWhatsAppSession(
+  token: string,
+): Promise<WhatsAppSession> {
+  return apiFetch<WhatsAppSession>("/whatsapp/session/start", {
+    method: "POST",
+    headers: runnerHeaders(token),
+  });
+}
+
+export async function stopWhatsAppSession(
+  token: string,
+): Promise<{ status: string }> {
+  return apiFetch<{ status: string }>("/whatsapp/session", {
+    method: "DELETE",
+    headers: runnerHeaders(token),
+  });
+}
+
+export async function fetchWhatsAppPeerGroups(
+  token: string,
+): Promise<{ items: WhatsAppPeerGroup[] }> {
+  return apiFetch<{ items: WhatsAppPeerGroup[] }>("/whatsapp/groups", {
+    headers: runnerHeaders(token),
+    cache: "no-store",
+  });
+}
+
+export async function fetchManagedOfferGroups(
+  token: string,
+): Promise<{ items: OfferGroup[] }> {
+  return apiFetch<{ items: OfferGroup[] }>("/whatsapp/offer-groups", {
+    headers: runnerHeaders(token),
+    cache: "no-store",
+  });
+}
+
+export async function registerOfferGroup(
+  token: string,
+  body: { jid: string; name?: string; description?: string; postsPerRun?: number },
+) {
+  return apiFetch("/whatsapp/offer-groups", {
+    method: "POST",
+    headers: runnerHeaders(token),
+    body: JSON.stringify(body),
+  });
+}
+
+export async function publishOfferGroupsNow(token: string) {
+  return apiFetch("/whatsapp/publish", {
+    method: "POST",
+    headers: runnerHeaders(token),
+  });
 }

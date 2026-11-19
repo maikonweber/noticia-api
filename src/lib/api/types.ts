@@ -97,6 +97,8 @@ export type Banner = {
   periodEnd: string | null;
   placement: string;
   featured: boolean;
+  rankScore?: number | null;
+  rank?: number | null;
   metadata: Record<string, unknown>;
   syncedAt: string;
   updatedAt: string;
@@ -124,3 +126,33 @@ export type BannersQuery = {
   page?: number;
   limit?: number;
 };
+
+export type OfferGroup = {
+  id: number;
+  name: string;
+  description: string | null;
+  inviteLink: string;
+  postsPerRun: number;
+};
+
+export type OfferGroupsResponse = {
+  items: OfferGroup[];
+};
+
+export type WhatsAppSession = {
+  id: string;
+  status: string;
+  connectionState?: string;
+  phone: string | null;
+  qrcode: string | null;
+  active?: boolean;
+  lastConnectedAt?: string | null;
+};
+
+export type WhatsAppPeerGroup = {
+  jid: string;
+  name: string;
+  size: number;
+  announce: boolean;
+};
+

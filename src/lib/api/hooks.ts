@@ -10,6 +10,8 @@ import {
   fetchArticles,
   fetchBanners,
   fetchFeaturedBanners,
+  fetchOfferGroups,
+  fetchOfferRanking,
   fetchSources,
   fetchStats,
   runIngestion,
@@ -152,5 +154,21 @@ export function useFreshOffers(limit = BANNER_LIMIT, slot = 0) {
     queryKey: ["offers", "fresh", limit, slot],
     queryFn: () => fetchFreshOffers({ limit }),
     ...offerQueryDefaults,
+  });
+}
+
+export function useOfferRanking(limit = 24) {
+  return useQuery({
+    queryKey: ["offers", "ranking", limit],
+    queryFn: () => fetchOfferRanking({ limit }),
+    staleTime: 60_000,
+  });
+}
+
+export function useOfferGroups() {
+  return useQuery({
+    queryKey: ["offer-groups"],
+    queryFn: fetchOfferGroups,
+    staleTime: 60_000,
   });
 }

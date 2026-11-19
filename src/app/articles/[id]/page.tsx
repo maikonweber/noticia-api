@@ -4,10 +4,8 @@ import { notFound } from "next/navigation";
 import { InlineBanner } from "@/components/banners/InlineBanner";
 import { SidebarBanner } from "@/components/banners/SidebarBanner";
 import { ArticleBody } from "@/components/articles/ArticleBody";
-import { EnrichedBadge } from "@/components/articles/EnrichedBadge";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { fetchArticle } from "@/lib/api/client";
-import { hasEnrichedBody } from "@/lib/articles";
 import { CATEGORY_LABEL } from "@/lib/categories";
 import { formatArticleDate } from "@/lib/format";
 import {
@@ -112,7 +110,6 @@ export default async function ArticlePage({ params }: Props) {
                   {article.sourceName}
                 </span>
               )}
-              {hasEnrichedBody(article) && <EnrichedBadge />}
               <span className="text-[var(--muted)]">·</span>
               <time
                 dateTime={publishedIso}
@@ -133,14 +130,7 @@ export default async function ArticlePage({ params }: Props) {
             </h1>
           </header>
 
-          {hasEnrichedBody(article) ? (
-            <div
-              className="mb-8 rounded-xl border border-[var(--border)] bg-[var(--surface)] p-5 text-base text-[var(--foreground)]"
-              itemProp="articleBody"
-            >
-              <ArticleBody text={article.body!.trim()} />
-            </div>
-          ) : article.summary?.trim() ? (
+          {article.summary?.trim() ? (
             <div
               className="mb-8 rounded-xl border border-[var(--border)] bg-[var(--surface)] p-5 text-base text-[var(--foreground)]"
               itemProp="description"
@@ -166,7 +156,7 @@ export default async function ArticlePage({ params }: Props) {
                 className="inline-flex rounded-xl bg-[var(--accent)] px-5 py-2.5 text-sm font-semibold text-[var(--accent-fg)] hover:opacity-90"
                 itemProp="isBasedOn"
               >
-                {hasEnrichedBody(article) || article.summary?.trim()
+                {article.summary?.trim()
                   ? "Abrir fonte original ↗"
                   : "Ler na fonte ↗"}
               </a>
