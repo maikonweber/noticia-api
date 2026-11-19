@@ -14,6 +14,8 @@ import {
   fetchOfferRanking,
   fetchSources,
   fetchStats,
+  fetchVulnerabilities,
+  fetchVulnerabilityStats,
   runIngestion,
 } from "./client";
 import {
@@ -26,7 +28,15 @@ import {
   HIGH_VALUE_LIMIT,
   HIGH_VALUE_MIN_PRICE,
 } from "./offers";
-import type { ArticlesQuery, ArticlesResponse, BannersQuery, Category } from "./types";
+import type {
+  ArticlesQuery,
+  ArticlesResponse,
+  BannersQuery,
+  Category,
+  VulnerabilitiesQuery,
+  VulnerabilitiesResponse,
+  VulnerabilityStats,
+} from "./types";
 
 const STALE_MS = 3 * 60 * 1000;
 
@@ -170,5 +180,29 @@ export function useOfferGroups() {
     queryKey: ["offer-groups"],
     queryFn: fetchOfferGroups,
     staleTime: 60_000,
+  });
+}
+
+export function useVulnerabilities(
+  params: VulnerabilitiesQuery,
+  options?: { initialData?: VulnerabilitiesResponse },
+) {
+  return useQuery({
+    queryKey: ["vulnerabilities", params],
+    queryFn: () => fetchVulnerabilities(params),
+    staleTime: 2 * 60 * 1000,
+    placeholderData: (prev) => prev,
+    initialData: options?.initialData,
+  });
+}
+
+export function useVulnerabilityStats(options?: {
+  initialData?: VulnerabilityStats;
+}) {
+  return useQuery({
+    queryKey: ["vulnerability-stats"],
+    queryFn: fetchVulnerabilityStats,
+    staleTime: 2 * 60 * 1000,
+    initialData: options?.initialData,
   });
 }

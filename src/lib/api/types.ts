@@ -6,7 +6,13 @@ export type Category =
   | "esportes"
   | "entretenimento"
   | "games"
-  | "cinema";
+  | "cinema"
+  | "seguranca"
+  | "ia"
+  | "economia"
+  | "brasil"
+  | "mundo"
+  | "ciencia";
 export type SourceType = "rss" | "html";
 
 export type Article = {
@@ -156,3 +162,74 @@ export type WhatsAppPeerGroup = {
   announce: boolean;
 };
 
+
+export type VulnSeverity =
+  | "CRITICAL"
+  | "HIGH"
+  | "MEDIUM"
+  | "LOW"
+  | "NONE"
+  | "UNKNOWN";
+
+export type Vulnerability = {
+  id: number;
+  vulnId: string;
+  aliases: string[];
+  title: string | null;
+  description: string | null;
+  severity: VulnSeverity;
+  cvssScore: number | null;
+  cvssVersion: string | null;
+  cvssVector: string | null;
+  cvssSource: string | null;
+  cwes: string[];
+  vendors: string[];
+  products: string[];
+  packages: string[];
+  references: string[];
+  status: string | null;
+  kev: boolean;
+  kevDateAdded: string | null;
+  kevDueDate: string | null;
+  kevRequiredAction: string | null;
+  kevRansomware: string | null;
+  sources: string[];
+  publishedAt: string | null;
+  lastModifiedAt: string | null;
+  firstSeenAt: string;
+  updatedAt: string;
+  updateCount: number;
+};
+
+export type VulnerabilitiesQuery = {
+  q?: string;
+  severity?: string;
+  kev?: boolean;
+  source?: "nvd" | "kev" | "ghsa";
+  sort?: "modified" | "published" | "score" | "kev";
+  page?: number;
+  limit?: number;
+};
+
+export type VulnerabilitiesResponse = {
+  items: Vulnerability[];
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+};
+
+export type VulnerabilityStats = {
+  total: number;
+  kev: number;
+  updated24h: number;
+  published24h: number;
+  lastUpdateAt: string | null;
+  bySeverity: { severity: VulnSeverity; count: number }[];
+  sync: {
+    source: string;
+    cursorAt: string | null;
+    lastRunAt: string | null;
+    lastSuccessAt: string | null;
+  }[];
+};

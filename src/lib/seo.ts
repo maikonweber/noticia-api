@@ -6,7 +6,7 @@ import { getArticlePreview } from "@/lib/articles";
 export const SITE_NAME = "Notice";
 export const SITE_TAGLINE = "Notícias por categoria";
 export const SITE_DESCRIPTION =
-  "Agregador de notícias em português da MutterCorp: investimentos, mercado crypto, tecnologia, programação, esportes, entretenimento, games e cinema. Atualizado continuamente.";
+  "Agregador de notícias da MutterCorp: tecnologia, IA, segurança e CVEs, investimentos, crypto, economia, Brasil, mundo, ciência, esportes, games e cinema.";
 
 export const SITE_KEYWORDS = [
   "notícias",
@@ -30,6 +30,15 @@ export const SITE_KEYWORDS = [
   "streaming",
   "feed de notícias",
   "Brasil",
+  "segurança da informação",
+  "cibersegurança",
+  "CVE",
+  "vulnerabilidades",
+  "CISA KEV",
+  "inteligência artificial",
+  "economia",
+  "ciência",
+  "mundo",
 ] as const;
 
 export function getSiteUrl(): string {

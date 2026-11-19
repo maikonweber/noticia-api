@@ -11,6 +11,10 @@ import type {
   OfferGroupsResponse,
   SourcesResponse,
   StatsResponse,
+  VulnerabilitiesQuery,
+  VulnerabilitiesResponse,
+  Vulnerability,
+  VulnerabilityStats,
   WhatsAppPeerGroup,
   WhatsAppSession,
 } from "./types";
@@ -208,5 +212,35 @@ export async function publishOfferGroupsNow(token: string) {
   return apiFetch("/whatsapp/publish", {
     method: "POST",
     headers: runnerHeaders(token),
+  });
+}
+
+export async function fetchVulnerabilities(
+  params: VulnerabilitiesQuery = {},
+): Promise<VulnerabilitiesResponse> {
+  return apiFetch<VulnerabilitiesResponse>(
+    `/vulnerabilities${toSearchParams({
+      q: params.q,
+      severity: params.severity,
+      kev: params.kev ? true : undefined,
+      source: params.source,
+      sort: params.sort,
+      page: params.page ?? 1,
+      limit: params.limit ?? 20,
+    })}`,
+    { cache: "no-store" },
+  );
+}
+
+export async function fetchVulnerability(id: string): Promise<Vulnerability> {
+  return apiFetch<Vulnerability>(
+    `/vulnerabilities/${encodeURIComponent(id)}`,
+    { cache: "no-store" },
+  );
+}
+
+export async function fetchVulnerabilityStats(): Promise<VulnerabilityStats> {
+  return apiFetch<VulnerabilityStats>("/vulnerabilities/stats", {
+    cache: "no-store",
   });
 }

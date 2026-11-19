@@ -45,6 +45,36 @@ export const CATEGORIES: {
     label: "Cinema e Séries",
     description: "Filmes, séries, streaming e indústria audiovisual",
   },
+  {
+    id: "seguranca",
+    label: "Segurança",
+    description: "Cibersegurança, ataques, vazamentos e alertas de vulnerabilidades",
+  },
+  {
+    id: "ia",
+    label: "Inteligência Artificial",
+    description: "IA generativa, modelos, pesquisa e mercado de IA",
+  },
+  {
+    id: "economia",
+    label: "Economia",
+    description: "Economia, negócios, empresas e mercado de trabalho",
+  },
+  {
+    id: "brasil",
+    label: "Brasil",
+    description: "Política, governo e principais notícias do país",
+  },
+  {
+    id: "mundo",
+    label: "Mundo",
+    description: "Notícias internacionais e geopolítica",
+  },
+  {
+    id: "ciencia",
+    label: "Ciência",
+    description: "Ciência, espaço, saúde e pesquisa",
+  },
 ];
 
 export const CATEGORY_LABEL: Record<string, string> = Object.fromEntries(
