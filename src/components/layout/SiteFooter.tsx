@@ -35,7 +35,7 @@ export function SiteFooter() {
 
         <nav aria-label="Categorias de notícias">
           <p className="eyebrow mb-3">Categorias</p>
-          <ul className="space-y-2 text-sm">
+          <ul className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm md:grid-cols-1">
             {CATEGORIES.map((cat) => (
               <li key={cat.id}>
                 <Link
@@ -53,8 +53,16 @@ export function SiteFooter() {
           <p className="eyebrow mb-3">Site</p>
           <ul className="space-y-2 text-sm">
             <li>
-              <Link href="/" className="hover:text-[var(--accent-soft)]">
+              <Link href="/categoria/tecnologia" className="hover:text-[var(--accent-soft)]">
                 Feed principal
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/vulnerabilidades"
+                className="hover:text-[var(--accent-soft)]"
+              >
+                Vulnerabilidades (CVEs)
               </Link>
             </li>
             <li>

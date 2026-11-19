@@ -41,6 +41,6 @@ export default async function CategoryPage({ params }: Props) {
   }
 
   return (
-    <FeedView category={category} initialArticles={initialArticles} />
+    <FeedView key={category} category={category} initialArticles={initialArticles} />
   );
 }

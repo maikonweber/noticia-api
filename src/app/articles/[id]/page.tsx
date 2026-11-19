@@ -5,6 +5,7 @@ import { InlineBanner } from "@/components/banners/InlineBanner";
 import { SidebarBanner } from "@/components/banners/SidebarBanner";
 import { ArticleBody } from "@/components/articles/ArticleBody";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { ShareButton } from "@/components/articles/ShareButton";
 import { fetchArticle } from "@/lib/api/client";
 import { CATEGORY_LABEL } from "@/lib/categories";
 import { formatArticleDate } from "@/lib/format";
@@ -77,7 +78,7 @@ export default async function ArticlePage({ params }: Props) {
           <nav aria-label="Breadcrumb" className="mb-6 text-sm text-[var(--muted)]">
             <ol className="flex flex-wrap items-center gap-1.5">
               <li>
-                <Link href="/" className="hover:text-[var(--accent)]">
+                <Link href="/categoria/tecnologia" className="hover:text-[var(--accent)]">
                   Início
                 </Link>
               </li>
@@ -147,13 +148,14 @@ export default async function ArticlePage({ params }: Props) {
             <InlineBanner page={numId % 20} variant="card" />
           </div>
 
-          <div className="flex flex-wrap gap-3">
+          <div className="grid gap-3 sm:flex sm:flex-wrap">
+            <ShareButton title={article.title} />
             {article.url && (
               <a
                 href={article.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex rounded-xl bg-[var(--accent)] px-5 py-2.5 text-sm font-semibold text-[var(--accent-fg)] hover:opacity-90"
+                className="inline-flex min-h-12 items-center justify-center rounded-xl bg-[var(--accent)] px-5 py-2.5 text-sm font-semibold text-[var(--accent-fg)] hover:opacity-90"
                 itemProp="isBasedOn"
               >
                 {article.summary?.trim()
@@ -166,7 +168,7 @@ export default async function ArticlePage({ params }: Props) {
                 href={article.sourceUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex rounded-xl border border-[var(--border)] px-5 py-2.5 text-sm font-medium text-[var(--muted)] hover:border-[var(--accent)] hover:text-[var(--foreground)]"
+                className="inline-flex min-h-12 items-center justify-center rounded-xl border border-[var(--border)] px-5 py-2.5 text-sm font-medium text-[var(--muted)] hover:border-[var(--accent)] hover:text-[var(--foreground)]"
               >
                 Feed da fonte
               </a>

@@ -11,10 +11,6 @@ export function SearchBar({ value, onChange }: Props) {
   const [draft, setDraft] = useState(value);
 
   useEffect(() => {
-    setDraft(value);
-  }, [value]);
-
-  useEffect(() => {
     const t = setTimeout(() => {
       if (draft !== value) onChange(draft);
     }, 400);
@@ -28,7 +24,8 @@ export function SearchBar({ value, onChange }: Props) {
         value={draft}
         onChange={(e) => setDraft(e.target.value)}
         placeholder="Buscar no título…"
-        className="w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] py-2.5 pl-10 pr-4 text-sm outline-none ring-[var(--accent)] placeholder:text-[var(--muted)] focus:ring-2"
+        enterKeyHint="search"
+        className="w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] py-3 pl-10 pr-4 text-base outline-none sm:py-2.5 sm:text-sm ring-[var(--accent)] placeholder:text-[var(--muted)] focus:ring-2"
         aria-label="Buscar notícias"
       />
       <svg

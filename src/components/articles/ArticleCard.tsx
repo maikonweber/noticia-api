@@ -2,37 +2,33 @@ import Link from "next/link";
 import type { Article } from "@/lib/api/types";
 import { getArticlePreview } from "@/lib/articles";
 import { CATEGORY_LABEL } from "@/lib/categories";
-import { formatRelativeDate } from "@/lib/format";
+import { RelativeTime } from "@/components/ui/RelativeTime";
 
 export function ArticleCard({ article }: { article: Article }) {
-  const dateLabel = formatRelativeDate(
-    article.publishedAt ?? article.collectedAt,
-  );
+  const iso = article.publishedAt ?? article.collectedAt;
   const preview = getArticlePreview(article);
   const showPreview = preview !== article.title;
 
   return (
-    <article className="group rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4 transition-shadow hover:shadow-md hover:shadow-black/5">
-      <div className="mb-2 flex flex-wrap items-center gap-2 text-xs">
+    <article className="group relative rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4 transition-shadow hover:shadow-md hover:shadow-black/5 active:bg-[var(--elevated)]/60">
+      <div className="mb-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
         <span className="rounded-full bg-[var(--elevated)] px-2 py-0.5 font-medium text-[var(--muted)]">
           {CATEGORY_LABEL[article.category] ?? article.category}
         </span>
         {article.sourceName && (
           <span className="text-[var(--muted)]">{article.sourceName}</span>
         )}
-        <span className="text-[var(--muted)]">·</span>
-        <time
-          dateTime={article.publishedAt ?? article.collectedAt}
-          className="text-[var(--muted)]"
-        >
-          {dateLabel}
-        </time>
+        <span className="text-[var(--muted)]" aria-hidden>
+          ·
+        </span>
+        <RelativeTime iso={iso} className="text-[var(--muted)]" />
       </div>
 
-      <h2 className="mb-2 text-base font-semibold leading-snug tracking-tight">
+      <h2 className="mb-2 text-[1.05rem] font-semibold leading-snug tracking-tight sm:text-base">
+        {/* O link do título cobre o card inteiro no toque (after:inset-0) */}
         <Link
           href={`/articles/${article.id}`}
-          className="text-[var(--foreground)] hover:text-[var(--accent)]"
+          className="text-[var(--foreground)] after:absolute after:inset-0 after:rounded-xl after:content-[''] hover:text-[var(--accent)]"
         >
           {article.title}
         </Link>
@@ -44,10 +40,10 @@ export function ArticleCard({ article }: { article: Article }) {
         </p>
       ) : null}
 
-      <div className="flex items-center gap-3 text-sm">
+      <div className="relative z-10 flex items-center gap-1 text-sm">
         <Link
           href={`/articles/${article.id}`}
-          className="font-medium text-[var(--accent)] hover:underline"
+          className="-ml-2 inline-flex min-h-11 items-center rounded-lg px-2 font-medium text-[var(--accent)] hover:underline sm:min-h-0 sm:py-1"
         >
           Ler mais
         </Link>
@@ -56,7 +52,7 @@ export function ArticleCard({ article }: { article: Article }) {
             href={article.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[var(--muted)] hover:text-[var(--foreground)]"
+            className="inline-flex min-h-11 items-center rounded-lg px-2 text-[var(--muted)] hover:text-[var(--foreground)] sm:min-h-0 sm:py-1"
           >
             Fonte original ↗
           </a>

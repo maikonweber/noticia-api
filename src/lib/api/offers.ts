@@ -144,14 +144,16 @@ export async function fetchFreshOffers(
     options.q ??
     (Math.random() < 0.35 ? undefined : pick(TECH_KEYWORDS));
   const page = randomInt(1, CATALOG_PAGE_SPAN);
-  const useLive = options.preferLive || Math.random() < 0.25;
+  // Live (/shopee/products) consulta a Shopee a cada visita e falha com frequência
+  // (502 "System Error" do upstream). No navegador usamos só o catálogo em cache.
+  const useLive = options.preferLive === true;
 
   if (useLive && keyword) {
     const live = await fetchLiveProducts({
       keyword,
       limit,
       page: randomInt(1, 5),
-      refresh: true,
+      // refresh=true exige runner token (SHOPEE_REFRESH_REQUIRE_TOKEN) → 401 no navegador
     });
     if (live?.items.length) {
       return {

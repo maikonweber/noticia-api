@@ -17,7 +17,7 @@ export function SourceFilters({
 }: Props) {
   if (loading) {
     return (
-      <div className="flex flex-wrap gap-2">
+      <div className="flex gap-2 overflow-hidden">
         {Array.from({ length: 4 }).map((_, i) => (
           <div
             key={i}
@@ -31,11 +31,11 @@ export function SourceFilters({
   if (sources.length === 0) return null;
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
       <button
         type="button"
         onClick={() => onChange(undefined)}
-        className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+        className={`shrink-0 whitespace-nowrap rounded-full border px-3 py-2 text-xs font-medium transition-colors sm:py-1 ${
           !selected
             ? "border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]"
             : "border-[var(--border)] text-[var(--muted)] hover:border-[var(--accent)]/40"
@@ -50,7 +50,7 @@ export function SourceFilters({
             key={src.id}
             type="button"
             onClick={() => onChange(active ? undefined : src.name)}
-            className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+            className={`shrink-0 whitespace-nowrap rounded-full border px-3 py-2 text-xs font-medium transition-colors sm:py-1 ${
               active
                 ? "border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]"
                 : "border-[var(--border)] text-[var(--muted)] hover:border-[var(--accent)]/40"

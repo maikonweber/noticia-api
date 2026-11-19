@@ -12,6 +12,7 @@ export function formatArticleDate(
     year: "numeric",
     hour: "2-digit",
     minute: "2-digit",
+    timeZone: "America/Sao_Paulo",
   }).format(date);
 }
 

@@ -8,7 +8,7 @@ export function VulnCard({ v }: { v: Vulnerability }) {
     .filter(Boolean)
     .slice(0, 4);
   return (
-    <article className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4 transition-colors hover:border-[var(--border-strong)]">
+    <article className="relative rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4 transition-colors hover:border-[var(--border-strong)]">
       <div className="flex flex-wrap items-center gap-2">
         <Link
           href={`/vulnerabilidades/${encodeURIComponent(v.vulnId)}`}
@@ -27,7 +27,7 @@ export function VulnCard({ v }: { v: Vulnerability }) {
       <h2 className="mt-2 text-sm font-semibold leading-snug">
         <Link
           href={`/vulnerabilidades/${encodeURIComponent(v.vulnId)}`}
-          className="hover:underline"
+          className="after:absolute after:inset-0 after:rounded-xl after:content-[''] hover:underline"
         >
           {vulnHeadline(v)}
         </Link>

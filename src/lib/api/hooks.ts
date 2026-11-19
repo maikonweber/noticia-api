@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  useInfiniteQuery,
   useMutation,
   useQuery,
   useQueryClient,
@@ -204,5 +205,40 @@ export function useVulnerabilityStats(options?: {
     queryFn: fetchVulnerabilityStats,
     staleTime: 2 * 60 * 1000,
     initialData: options?.initialData,
+  });
+}
+
+/** Lista "carregar mais"/rolagem infinita — usada no feed e na página de CVEs. */
+export function useInfiniteArticles(
+  params: Omit<ArticlesQuery, "page">,
+  options?: { initialData?: ArticlesResponse },
+) {
+  return useInfiniteQuery({
+    queryKey: ["articles-infinite", params],
+    queryFn: ({ pageParam }) => fetchArticles({ ...params, page: pageParam }),
+    initialPageParam: 1,
+    getNextPageParam: (last) =>
+      last.page < last.totalPages ? last.page + 1 : undefined,
+    staleTime: STALE_MS,
+    initialData: options?.initialData
+      ? { pages: [options.initialData], pageParams: [1] }
+      : undefined,
+  });
+}
+
+export function useInfiniteVulnerabilities(
+  params: Omit<VulnerabilitiesQuery, "page">,
+  options?: { initialData?: VulnerabilitiesResponse },
+) {
+  return useInfiniteQuery({
+    queryKey: ["vulnerabilities-infinite", params],
+    queryFn: ({ pageParam }) => fetchVulnerabilities({ ...params, page: pageParam }),
+    initialPageParam: 1,
+    getNextPageParam: (last) =>
+      last.page < last.totalPages ? last.page + 1 : undefined,
+    staleTime: 2 * 60 * 1000,
+    initialData: options?.initialData
+      ? { pages: [options.initialData], pageParams: [1] }
+      : undefined,
   });
 }
