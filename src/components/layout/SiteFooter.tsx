@@ -75,6 +75,14 @@ export function SiteFooter() {
             </li>
             <li>
               <Link
+                href="/feeds"
+                className="hover:text-[var(--accent-soft)]"
+              >
+                Feeds RSS / JSON
+              </Link>
+            </li>
+            <li>
+              <Link
                 href="/dashboard"
                 className="hover:text-[var(--accent-soft)]"
               >

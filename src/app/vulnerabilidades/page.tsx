@@ -16,7 +16,15 @@ export const metadata: Metadata = {
   title: "Vulnerabilidades e CVEs",
   description:
     "CVEs novas e atualizadas (NVD), vulnerabilidades exploradas ativamente (CISA KEV) e GitHub Security Advisories, com severidade CVSS e busca por CVE.",
-  alternates: { canonical: "/vulnerabilidades" },
+  alternates: {
+    canonical: "/vulnerabilidades",
+    types: {
+      "application/rss+xml": [
+        { url: "/vulnerabilidades/feed.xml", title: `${SITE_NAME} — Vulnerabilidades` },
+        { url: "/vulnerabilidades/feed.xml?kev=1", title: `${SITE_NAME} — CVEs exploradas (CISA KEV)` },
+      ],
+    },
+  },
   openGraph: {
     title: `Vulnerabilidades e CVEs · ${SITE_NAME}`,
     url: "/vulnerabilidades",

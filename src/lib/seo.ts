@@ -95,6 +95,14 @@ export function buildRootMetadata(): Metadata {
     },
     alternates: {
       canonical: "/",
+      types: {
+        "application/rss+xml": [
+          { url: "/feed.xml", title: `${SITE_NAME} — Todas as notícias` },
+        ],
+        "application/feed+json": [
+          { url: "/feed.json", title: `${SITE_NAME} — Todas as notícias` },
+        ],
+      },
     },
     openGraph: {
       type: "website",
@@ -138,7 +146,17 @@ export function buildCategoryMetadata(categoryId: string): Metadata {
     title,
     description,
     keywords: [label, "notícias", label.toLowerCase(), ...SITE_KEYWORDS],
-    alternates: { canonical: path },
+    alternates: {
+      canonical: path,
+      types: {
+        "application/rss+xml": [
+          { url: `${path}/feed.xml`, title: `${SITE_NAME} — ${label}` },
+        ],
+        "application/feed+json": [
+          { url: `${path}/feed.json`, title: `${SITE_NAME} — ${label}` },
+        ],
+      },
+    },
     openGraph: {
       type: "website",
       locale: "pt_BR",
