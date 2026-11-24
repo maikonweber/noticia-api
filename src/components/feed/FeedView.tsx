@@ -7,6 +7,7 @@ import { EmptyState } from "@/components/articles/EmptyState";
 import { ErrorState } from "@/components/articles/ErrorState";
 import { SearchBar } from "@/components/articles/SearchBar";
 import { SourceFilters } from "@/components/articles/SourceFilters";
+import { TopicFilters } from "@/components/articles/TopicFilters";
 import { HeroCarousel } from "@/components/banners/HeroCarousel";
 import { HighValueGrid } from "@/components/banners/HighValueGrid";
 import { InlineBanner } from "@/components/banners/InlineBanner";
@@ -19,11 +20,13 @@ import { CATEGORIES } from "@/lib/categories";
 
 type Props = {
   category: Category;
+  /** Filtro interno da categoria Animes */
+  topic?: "one-piece";
   /** Primeira página SSR — melhora indexação */
   initialArticles?: ArticlesResponse;
 };
 
-export function FeedView({ category, initialArticles }: Props) {
+export function FeedView({ category, topic, initialArticles }: Props) {
   const [q, setQ] = useState("");
   const [sourceName, setSourceName] = useState<string | undefined>();
   // Com "carregar mais" a lista reinicia sozinha quando os filtros mudam (nova queryKey)
@@ -45,6 +48,8 @@ export function FeedView({ category, initialArticles }: Props) {
     category,
     q: q || undefined,
     sourceName,
+    topic: category === "animes" ? topic : undefined,
+    onePiece: category === "animes" && topic === "one-piece" ? true : undefined,
     limit: 20,
   };
 
@@ -69,15 +74,20 @@ export function FeedView({ category, initialArticles }: Props) {
       <section className="space-y-4">
         <div>
           <h1 className="text-[1.6rem] font-bold leading-tight tracking-tight sm:text-3xl">
-            Notícias de {catMeta?.label ?? category}
+            {topic === "one-piece"
+              ? "One Piece"
+              : `Notícias de ${catMeta?.label ?? category}`}
           </h1>
           {catMeta && (
             <p className="mt-1 hidden text-sm text-[var(--muted)] sm:block">
-              {catMeta.description}. Atualizado continuamente no Notice.
+              {topic === "one-piece"
+                ? "Notícias, capítulos e spoilers de One Piece. Títulos com spoiler ficam ocultos até você tocar."
+                : `${catMeta.description}. Atualizado continuamente no Notice.`}
             </p>
           )}
         </div>
         <CategoryTabs value={category} />
+        {category === "animes" ? <TopicFilters topic={topic} /> : null}
         <SearchBar value={q} onChange={handleSearch} />
         <SourceFilters
           sources={sourcesQuery.data?.items ?? []}

@@ -46,6 +46,11 @@ export const CATEGORIES: {
     description: "Filmes, séries, streaming e indústria audiovisual",
   },
   {
+    id: "animes",
+    label: "Animes",
+    description: "Animes, mangás, spoilers e novidades — com destaque para One Piece",
+  },
+  {
     id: "seguranca",
     label: "Segurança",
     description: "Cibersegurança, ataques, vazamentos e alertas de vulnerabilidades",

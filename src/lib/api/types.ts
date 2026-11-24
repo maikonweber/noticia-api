@@ -7,6 +7,7 @@ export type Category =
   | "entretenimento"
   | "games"
   | "cinema"
+  | "animes"
   | "seguranca"
   | "ia"
   | "economia"
@@ -28,6 +29,8 @@ export type Article = {
   bodyGeneratedAt: string | null;
   publishedAt: string | null;
   collectedAt: string;
+  isOnePiece?: boolean;
+  isSpoiler?: boolean;
 };
 
 /** Alias alinhado ao contrato notice-api */
@@ -74,6 +77,9 @@ export type ArticlesQuery = {
   q?: string;
   from?: string;
   to?: string;
+  topic?: "one-piece";
+  onePiece?: boolean;
+  spoiler?: boolean;
   page?: number;
   limit?: number;
 };

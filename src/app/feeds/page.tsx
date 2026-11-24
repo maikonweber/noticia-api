@@ -74,6 +74,14 @@ export default function FeedsPage() {
     rss: absoluteUrl(`${categoryPath(c.id)}/feed.xml`),
     json: absoluteUrl(`${categoryPath(c.id)}/feed.json`),
   }));
+  const animesExtra: Row[] = [
+    {
+      title: "One Piece",
+      description: "Só matérias de One Piece (notícias, capítulos e spoilers). Itens com spoiler vêm com [Spoiler] no título.",
+      rss: absoluteUrl(`${categoryPath("animes")}/feed.xml?topic=one-piece`),
+      json: absoluteUrl(`${categoryPath("animes")}/feed.json?topic=one-piece`),
+    },
+  ];
 
   return (
     <div className="space-y-8">
@@ -96,6 +104,11 @@ export default function FeedsPage() {
       <section className="space-y-3">
         <h2 className="text-lg font-semibold">Segurança / CVEs</h2>
         <ul className="space-y-3">{vulns.map((r) => <FeedRow key={r.rss} row={r} />)}</ul>
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="text-lg font-semibold">Animes</h2>
+        <ul className="space-y-3">{animesExtra.map((r) => <FeedRow key={r.rss} row={r} />)}</ul>
       </section>
 
       <section className="space-y-3">

@@ -174,17 +174,24 @@ export function buildCategoryMetadata(categoryId: string): Metadata {
 }
 
 export function buildArticleMetadata(article: Article): Metadata {
-  const description = truncateMeta(
-    getArticlePreview(article, 200) ||
-      `Notícia sobre ${CATEGORY_LABEL[article.category] ?? article.category} no ${SITE_NAME}.`,
-  );
-  const path = articlePath(article.id);
-  const published = article.publishedAt ?? article.collectedAt;
   const categoryLabel =
     CATEGORY_LABEL[article.category] ?? article.category;
+  const safeTitle = article.isSpoiler
+    ? article.isOnePiece
+      ? "[Spoiler] One Piece"
+      : `[Spoiler] ${categoryLabel}`
+    : article.title;
+  const description = article.isSpoiler
+    ? "Esta notícia contém spoiler. Abra no Notice e toque para revelar o conteúdo."
+    : truncateMeta(
+        getArticlePreview(article, 200) ||
+          `Notícia sobre ${categoryLabel} no ${SITE_NAME}.`,
+      );
+  const path = articlePath(article.id);
+  const published = article.publishedAt ?? article.collectedAt;
 
   return {
-    title: article.title,
+    title: safeTitle,
     description,
     authors: article.sourceName
       ? [{ name: article.sourceName }]
@@ -196,7 +203,7 @@ export function buildArticleMetadata(article: Article): Metadata {
       locale: "pt_BR",
       url: absoluteUrl(path),
       siteName: SITE_NAME,
-      title: article.title,
+      title: safeTitle,
       description,
       publishedTime: published,
       modifiedTime: article.collectedAt,
@@ -206,7 +213,7 @@ export function buildArticleMetadata(article: Article): Metadata {
     },
     twitter: {
       card: "summary_large_image",
-      title: article.title,
+      title: safeTitle,
       description,
     },
   };
@@ -214,15 +221,22 @@ export function buildArticleMetadata(article: Article): Metadata {
 
 export function buildNewsArticleJsonLd(article: Article) {
   const path = articlePath(article.id);
-  const description = truncateMeta(getArticlePreview(article, 200), 200);
-  const published = article.publishedAt ?? article.collectedAt;
   const categoryLabel =
     CATEGORY_LABEL[article.category] ?? article.category;
+  const description = article.isSpoiler
+    ? "Esta notícia contém spoiler. Abra no Notice e toque para revelar o conteúdo."
+    : truncateMeta(getArticlePreview(article, 200), 200);
+  const published = article.publishedAt ?? article.collectedAt;
+  const headline = article.isSpoiler
+    ? article.isOnePiece
+      ? "[Spoiler] One Piece"
+      : `[Spoiler] ${categoryLabel}`
+    : article.title;
 
   return {
     "@context": "https://schema.org",
     "@type": "NewsArticle",
-    headline: article.title,
+    headline,
     description,
     datePublished: published,
     dateModified: article.collectedAt,

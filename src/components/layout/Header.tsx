@@ -6,6 +6,7 @@ import { MenuButton } from "./MobileNav";
 
 const links = [
   { href: "/categoria/tecnologia", label: "Feed" },
+  { href: "/categoria/animes", label: "Animes" },
   { href: "/vulnerabilidades", label: "CVEs" },
   { href: "/ofertas", label: "Ofertas" },
   { href: "/dashboard", label: "Dashboard" },
@@ -45,7 +46,10 @@ export function Header() {
           className="hidden items-center gap-1 text-sm md:flex"
         >
           <div className="mr-1 hidden items-center gap-0.5 lg:flex">
-            {CATEGORIES.slice(0, 4).map((cat) => (
+            {[
+              CATEGORIES.find((c) => c.id === "animes"),
+              ...CATEGORIES.filter((c) => c.id !== "animes").slice(0, 3),
+            ].filter((c): c is (typeof CATEGORIES)[number] => Boolean(c)).map((cat) => (
               <Link
                 key={cat.id}
                 href={categoryPath(cat.id)}

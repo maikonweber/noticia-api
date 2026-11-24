@@ -55,7 +55,7 @@ function rfc822(iso: string): string {
 export function articleToFeedItem(a: Article): FeedItem {
   return {
     id: absoluteUrl(articlePath(a.id)),
-    title: a.title,
+    title: a.isSpoiler ? `[Spoiler] ${a.title}` : a.title,
     link: absoluteUrl(articlePath(a.id)),
     summary: getArticlePreview(a, 400),
     externalUrl: a.url,
@@ -193,16 +193,32 @@ export async function buildAllNewsChannel(): Promise<FeedChannel> {
   };
 }
 
-export async function buildCategoryChannel(category: Category): Promise<FeedChannel> {
+export async function buildCategoryChannel(
+  category: Category,
+  opts: { topic?: "one-piece" } = {},
+): Promise<FeedChannel> {
   const cat = CATEGORIES.find((c) => c.id === category);
-  const res = await fetchArticles({ category, page: 1, limit: FEED_ITEM_LIMIT });
+  const onePiece = opts.topic === "one-piece";
+  const res = await fetchArticles({
+    category,
+    topic: onePiece ? "one-piece" : undefined,
+    onePiece: onePiece || undefined,
+    page: 1,
+    limit: FEED_ITEM_LIMIT,
+  });
   const base = categoryPath(category);
+  const suffix = onePiece ? "?topic=one-piece" : "";
+  const label = onePiece ? "One Piece" : (cat?.label ?? category);
   return {
-    title: `${SITE_NAME} — ${cat?.label ?? category}`,
-    description: cat ? `Notícias de ${cat.label}: ${cat.description}.` : SITE_DESCRIPTION,
-    homeUrl: absoluteUrl(base),
-    feedUrl: absoluteUrl(`${base}/feed.xml`),
-    jsonFeedUrl: absoluteUrl(`${base}/feed.json`),
+    title: `${SITE_NAME} — ${label}`,
+    description: onePiece
+      ? "Notícias, capítulos e spoilers de One Piece. Itens com spoiler vêm marcados no título."
+      : cat
+        ? `Notícias de ${cat.label}: ${cat.description}.`
+        : SITE_DESCRIPTION,
+    homeUrl: absoluteUrl(onePiece ? `${base}?topic=one-piece` : base),
+    feedUrl: absoluteUrl(`${base}/feed.xml${suffix}`),
+    jsonFeedUrl: absoluteUrl(`${base}/feed.json${suffix}`),
     items: res.items.map(articleToFeedItem),
   };
 }

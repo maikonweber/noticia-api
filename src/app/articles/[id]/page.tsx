@@ -6,6 +6,7 @@ import { SidebarBanner } from "@/components/banners/SidebarBanner";
 import { ArticleBody } from "@/components/articles/ArticleBody";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { ShareButton } from "@/components/articles/ShareButton";
+import { OnePieceBadge, SpoilerBadge, SpoilerReveal } from "@/components/articles/SpoilerReveal";
 import { fetchArticle } from "@/lib/api/client";
 import { CATEGORY_LABEL } from "@/lib/categories";
 import { formatArticleDate } from "@/lib/format";
@@ -121,14 +122,18 @@ export default async function ArticlePage({ params }: Props) {
               <meta itemProp="dateModified" content={article.collectedAt} />
               <meta itemProp="inLanguage" content="pt-BR" />
               <meta itemProp="isAccessibleForFree" content="true" />
+              {article.isOnePiece ? <OnePieceBadge /> : null}
+              {article.isSpoiler ? <SpoilerBadge /> : null}
             </div>
 
-            <h1
-              className="text-2xl font-bold leading-tight tracking-tight sm:text-3xl"
-              itemProp="headline"
-            >
-              {article.title}
-            </h1>
+            <SpoilerReveal enabled={Boolean(article.isSpoiler)}>
+              <h1
+                className="text-2xl font-bold leading-tight tracking-tight sm:text-3xl"
+                itemProp="headline"
+              >
+                {article.title}
+              </h1>
+            </SpoilerReveal>
           </header>
 
           {article.summary?.trim() ? (
@@ -136,7 +141,9 @@ export default async function ArticlePage({ params }: Props) {
               className="mb-8 rounded-xl border border-[var(--border)] bg-[var(--surface)] p-5 text-base text-[var(--foreground)]"
               itemProp="description"
             >
-              <ArticleBody text={article.summary.trim()} />
+              <SpoilerReveal enabled={Boolean(article.isSpoiler)}>
+                <ArticleBody text={article.summary.trim()} />
+              </SpoilerReveal>
             </div>
           ) : (
             <p className="mb-8 text-sm text-[var(--muted)]">

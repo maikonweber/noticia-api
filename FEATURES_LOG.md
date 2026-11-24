@@ -1,5 +1,18 @@
 # FEATURES_LOG — Notice (news.muttercorp.com.br)
 
+## 2026-11-24 — Categoria Animes + One Piece / spoilers (branch `feature/animes`)
+- Nova categoria **Animes** (`/categoria/animes`), com 21 feeds RSS validados (PT-BR e EN): Anime News Network, MyAnimeList, Otaku USA, Anime Corner, Dexerto Anime, ComicBook Anime, CBR Anime, IntoxiAnime, AnimeNew, Anime United, JBox, Combo Infinito Animes, mais fontes dedicadas de One Piece (CBR, ScreenRant, GameRant, IntoxiAnime, Anime United, Combo Infinito, O Vício, Critical Hits e The Library of Ohara).
+- Fontes descartadas por falha: Crunchyroll News (página HTML, não RSS; o `/rss/news` é feed de vídeos), Reddit r/OnePiece, r/OnePieceSpoilers e r/anime (403/404/429), Omelete, Sportskeeda (verificação humana), WorstGen, RSShub/Nitter, Fandom e várias tags mortas.
+- Filtro destacado **One Piece** em `/categoria/animes?topic=one-piece` (também na API: `?topic=one-piece` ou `?onePiece=true`). Itens são marcados por palavras-chave (One Piece, Luffy, Oda, Elbaf, capítulos etc.) ou pelo nome da fonte.
+- Selo **Spoiler** e texto/título ocultos com blur até o clique/toque (cards e página da notícia). Compartilhamento (Open Graph/Twitter) não antecipa o título do spoiler.
+- Feeds: `/categoria/animes/feed.xml` e `/feed.json`, mais `/categoria/animes/feed.xml?topic=one-piece` listado em `/feeds`. Itens com spoiler saem com prefixo `[Spoiler]` no RSS.
+- A seção aparece no nav desktop (link Animes + atalho na faixa de categorias), na gaveta mobile e nas abas de categoria.
+- Sem migration de schema: flags calculadas na leitura. Deduplicação por URL dentro da mesma categoria na ingestão (evita o mesmo post de feeds geral + tag).
+- Só entra na `main`/`master` depois do merge explícito; deploy de produção foi feito a partir desta branch.
+- Backups (2026-11-24 16:24 America/Sao_Paulo): `/root/backups/notice-api/env-20261124-202438.bak`, `frontend-env-20261124-202438.bak`, `notice_api-20261124-202438.dump`, `frontend-next-20261124-202438/`, `frontend-src-20261124-202438.tgz`, `api-prev-commit-20261124-202438.txt` (eb64f7f), `frontend-prev-commit-20261124-202438.txt` (64060c4).
+- **Rollback**: restaurar o dump se necessário; no frontend, `cd /apps/production/notice-api/frontend && git checkout main && rm -rf .next && cp -a /root/backups/notice-api/frontend-next-20261124-202438 .next && pm2 restart notice-frontend --update-env && pm2 save`. Na API, `cd /apps/production/notice-api && git checkout master && pm2 restart notice-api notice-worker --update-env && pm2 save`.
+
+
 ## 2026-11-23 — Feeds RSS / JSON Feed (branch `feature/rss-feeds`, repo noticia-api, commit `65de2ee`)
 - **Feed geral**: `/feed.xml` (RSS 2.0) e `/feed.json` (JSON Feed 1.1) — 50 notícias mais recentes de todas as categorias.
 - **Por categoria** (14): `/categoria/<slug>/feed.xml` e `/categoria/<slug>/feed.json` (slug inválido → 404).
