@@ -24,6 +24,9 @@ const syne = Syne({
 
 export const metadata: Metadata = {
   ...buildRootMetadata(),
+  other: {
+    "google-adsense-account": "ca-pub-1638014307034538",
+  },
   icons: {
     icon: [
       { url: "/favicon.png", type: "image/png" },
@@ -59,6 +62,14 @@ export default function RootLayout({
       lang="pt-BR"
       className={`${manrope.variable} ${syne.variable} h-full antialiased`}
     >
+      <head>
+        {/* Script nativo no <head> evita data-nscript do next/script, que o AdSense às vezes rejeita. */}
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1638014307034538"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body className="flex min-h-full flex-col">
         <JsonLd data={buildWebsiteJsonLd()} />
         <QueryProvider>

@@ -1,5 +1,11 @@
 # FEATURES_LOG — Notice (news.muttercorp.com.br)
 
+## 2026-11-27 — Google AdSense (branch `feat/adsense`)
+- Meta `google-adsense-account` (`ca-pub-1638014307034538`) no layout raiz e script Auto Ads (`adsbygoogle.js`) no `<head>` nativo, sem `next/script`.
+- `public/ads.txt`: `google.com, pub-1638014307034538, DIRECT, f08c47fec0942fa0`.
+- Sem mudança de CSP/nginx: não havia Content-Security-Policy no Next nem no vhost `news.muttercorp.com.br`.
+- Backups (2026-11-27 16:42 America/Sao_Paulo): `/root/backups/notice-api/env-20261127-204203.bak`, `frontend-env-20261127-204203.bak`, `frontend-next-20261127-204203/`, `frontend-src-20261127-204203.tgz`, `frontend-prev-commit-20261127-204203.txt` (fdbf114).
+
 ## 2026-11-24 — Categoria Animes + One Piece / spoilers (branch `feature/animes`)
 - Nova categoria **Animes** (`/categoria/animes`), com 21 feeds RSS validados (PT-BR e EN): Anime News Network, MyAnimeList, Otaku USA, Anime Corner, Dexerto Anime, ComicBook Anime, CBR Anime, IntoxiAnime, AnimeNew, Anime United, JBox, Combo Infinito Animes, mais fontes dedicadas de One Piece (CBR, ScreenRant, GameRant, IntoxiAnime, Anime United, Combo Infinito, O Vício, Critical Hits e The Library of Ohara).
 - Fontes descartadas por falha: Crunchyroll News (página HTML, não RSS; o `/rss/news` é feed de vídeos), Reddit r/OnePiece, r/OnePieceSpoilers e r/anime (403/404/429), Omelete, Sportskeeda (verificação humana), WorstGen, RSShub/Nitter, Fandom e várias tags mortas.
